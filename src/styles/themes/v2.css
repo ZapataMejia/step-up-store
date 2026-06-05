@@ -1,0 +1,44 @@
+/* Urbano impacto — oscuro + azul marca */
+html.theme-v2 {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-soft: #1e3a5f;
+  --bg: #0c0c0c;
+  --bg-muted: #141414;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --header-bg: rgba(12, 12, 12, 0.95);
+  --header-text: #fafafa;
+  --header-border: #27272a;
+  --hero-bg: #0c0c0c;
+  --hero-text: #fafafa;
+  --hero-muted: #a1a1aa;
+  --card-bg: #18181b;
+  --card-border: #3f3f46;
+  --footer-bg: #000;
+  --radius: 8px;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+html.theme-v2 .sus-features {
+  background: #141414;
+  border-top: 1px solid #27272a;
+}
+
+html.theme-v2 .sus-features__list li {
+  background: #18181b;
+  border-color: #3f3f46;
+}
+
+html.theme-v2 .sus-features__label {
+  color: #e4e4e7;
+}
+
+html.theme-v2 .sus-trust {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+html.theme-v2 .sus-trust__list li {
+  color: #d4d4d8;
+}

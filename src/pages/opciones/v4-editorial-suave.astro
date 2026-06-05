@@ -1,0 +1,11 @@
+---
+import VariantLayout from "../../layouts/VariantLayout.astro";
+import LandingPage from "../../components/LandingPage.astro";
+import { store } from "../../data/store";
+
+const slug = "v4-editorial-suave";
+---
+
+<VariantLayout title={`${store.name} · Editorial suave`} theme="v4" description="Propuesta 4 — estilo revista, mucho espacio y azul en detalles.">
+  <LandingPage themeId="v4" slug={slug} />
+</VariantLayout>

@@ -1,0 +1,14 @@
+---
+import VariantLayout from "../layouts/VariantLayout.astro";
+import LandingPage from "../components/LandingPage.astro";
+import { store } from "../data/store";
+
+const slug = "v2-urbano-impacto";
+const pageTitle = `${store.name} ${store.nameAccent} · Tenis y ropa urbana`;
+const pageDescription =
+  "STEP UP STORE: tenis top marcas, ropa urbana, deportivo, accesorios y más. Compra online por WhatsApp con envíos a todo el país.";
+---
+
+<VariantLayout title={pageTitle} theme="v2" description={pageDescription}>
+  <LandingPage themeId="v2" slug={slug} showPickerLink={false} />
+</VariantLayout>

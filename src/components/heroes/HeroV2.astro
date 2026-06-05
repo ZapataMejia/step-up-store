@@ -1,0 +1,121 @@
+---
+import { store } from "../../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../../lib/whatsapp";
+
+const wa = whatsappUrl(defaultOrderMessage);
+const heroImage = Astro.props.heroImage;
+---
+
+<section class="hero-v2" id="inicio">
+  <div class="hero-v2__bg" aria-hidden="true"></div>
+  <div class="sus-container hero-v2__inner">
+    <div class="hero-v2__copy">
+      <p class="hero-v2__label">{store.name} {store.nameAccent}</p>
+      <p class="hero-v2__tag">{store.tagline}</p>
+      <h1 class="hero-v2__title">
+        {store.sloganLine1}
+        <em>{store.sloganLine2}</em>
+      </h1>
+      <p class="hero-v2__value">{store.valueProp}</p>
+      <div class="hero-v2__actions">
+        <a class="sus-btn sus-btn--primary" href={wa} target="_blank" rel="noopener noreferrer">{store.ctaOnline}</a>
+        <a class="sus-btn sus-btn--outline-light" href="#categorias">Explorar</a>
+      </div>
+    </div>
+    <div class="hero-v2__frame">
+      <img src={heroImage} alt="Estilo urbano STEP UP STORE" width="900" height="700" loading="eager" />
+      <span class="hero-v2__sticker">🔥 Nuevos ingresos</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-v2 {
+    position: relative;
+    padding: 3rem 0 4rem;
+    background: var(--hero-bg);
+    color: var(--hero-text);
+    overflow: hidden;
+  }
+  .hero-v2__bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.25), transparent 50%),
+      radial-gradient(circle at 10% 80%, rgba(29, 78, 216, 0.15), transparent 40%);
+    pointer-events: none;
+  }
+  .hero-v2__inner {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  .hero-v2__label {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    letter-spacing: 0.2em;
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+  .hero-v2__tag {
+    margin: 0.5rem 0 1rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--hero-muted);
+  }
+  .hero-v2__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+  .hero-v2__title em {
+    display: block;
+    font-style: normal;
+    color: var(--primary);
+    text-shadow: 0 0 40px rgba(37, 99, 235, 0.5);
+  }
+  .hero-v2__value {
+    margin: 1.25rem 0;
+    max-width: 22rem;
+    color: var(--hero-muted);
+    font-size: 1.1rem;
+  }
+  .hero-v2__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero-v2__frame {
+    position: relative;
+    border: 3px solid var(--primary);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transform: rotate(-1deg);
+  }
+  .hero-v2__frame img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+  }
+  .hero-v2__sticker {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.4rem 0.85rem;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  @media (min-width: 900px) {
+    .hero-v2__inner {
+      grid-template-columns: 1fr 1.1fr;
+    }
+  }
+</style>

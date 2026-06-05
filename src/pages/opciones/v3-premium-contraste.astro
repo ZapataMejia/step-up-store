@@ -1,0 +1,11 @@
+---
+import VariantLayout from "../../layouts/VariantLayout.astro";
+import LandingPage from "../../components/LandingPage.astro";
+import { store } from "../../data/store";
+
+const slug = "v3-premium-contraste";
+---
+
+<VariantLayout title={`${store.name} · Premium contraste`} theme="v3" description="Propuesta 3 — elegante, negro y azul eléctrico.">
+  <LandingPage themeId="v3" slug={slug} />
+</VariantLayout>

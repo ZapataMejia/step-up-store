@@ -1,0 +1,89 @@
+---
+import type { ThemeId } from "../data/themes";
+import { themeBySlug } from "../data/themes";
+import SiteHeader from "./SiteHeader.astro";
+import HeroV1 from "./heroes/HeroV1.astro";
+import HeroV2 from "./heroes/HeroV2.astro";
+import HeroV3 from "./heroes/HeroV3.astro";
+import HeroV4 from "./heroes/HeroV4.astro";
+import Features from "./Features.astro";
+import TrustBar from "./TrustBar.astro";
+import Categories from "./Categories.astro";
+import Catalogs from "./Catalogs.astro";
+import Brands from "./Brands.astro";
+import HowToBuy from "./HowToBuy.astro";
+import PaymentMethods from "./PaymentMethods.astro";
+import CtaBand from "./CtaBand.astro";
+import SiteFooter from "./SiteFooter.astro";
+import WhatsAppFloat from "./WhatsAppFloat.astro";
+import { store } from "../data/store";
+
+interface Props {
+  themeId: ThemeId;
+  slug: string;
+  showPickerLink?: boolean;
+  pickerHref?: string;
+}
+
+const { themeId, slug, showPickerLink = true, pickerHref = "/opciones" } = Astro.props;
+const theme = themeBySlug(slug);
+const heroImage = theme?.heroImage ?? "/images/hero-clean.png";
+const streetImage = theme?.streetImage ?? "/images/hero-street.png";
+
+const themeNames: Record<ThemeId, string> = {
+  v1: "Clásico azul",
+  v2: "Urbano impacto",
+  v3: "Premium contraste",
+  v4: "Editorial suave",
+};
+---
+
+<a class="sus-skip" href="#categorias">Saltar al contenido</a>
+
+{showPickerLink ? (
+  <div class="variant-banner">
+    <div class="sus-container variant-banner__inner">
+      <span>Vista previa: <strong>{themeNames[themeId]}</strong></span>
+      <a href={pickerHref}>← Ver las 4 propuestas</a>
+    </div>
+  </div>
+) : null}
+
+<SiteHeader themeId={themeId} />
+<main>
+  {themeId === "v1" && <HeroV1 heroImage={heroImage} />}
+  {themeId === "v2" && <HeroV2 heroImage={heroImage} />}
+  {themeId === "v3" && <HeroV3 heroImage={heroImage} />}
+  {themeId === "v4" && <HeroV4 heroImage={heroImage} />}
+  <Features />
+  <TrustBar />
+  <Categories layout={themeId === "v4" ? "bento" : "grid"} />
+  <Catalogs />
+  <Brands image={streetImage} inverted={themeId === "v2" || themeId === "v3"} />
+  <HowToBuy />
+  <PaymentMethods />
+  <CtaBand />
+</main>
+<SiteFooter />
+<WhatsAppFloat />
+
+<style>
+  .variant-banner {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.5rem 0;
+    font-size: 0.82rem;
+  }
+  .variant-banner__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .variant-banner a {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+</style>

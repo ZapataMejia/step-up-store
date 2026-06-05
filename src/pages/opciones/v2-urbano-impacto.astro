@@ -1,0 +1,11 @@
+---
+import VariantLayout from "../../layouts/VariantLayout.astro";
+import LandingPage from "../../components/LandingPage.astro";
+import { store } from "../../data/store";
+
+const slug = "v2-urbano-impacto";
+---
+
+<VariantLayout title={`${store.name} · Urbano impacto`} theme="v2" description="Propuesta 2 — streetwear oscuro con acentos azules.">
+  <LandingPage themeId="v2" slug={slug} />
+</VariantLayout>

@@ -1,0 +1,42 @@
+---
+import "../styles/global.css";
+import type { ThemeId } from "../data/themes";
+
+interface Props {
+  title: string;
+  description?: string;
+  theme: ThemeId;
+}
+
+const { title, description, theme } = Astro.props;
+
+const fonts =
+  theme === "v4"
+    ? "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@500;600;700&display=swap"
+    : "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap";
+---
+
+<!doctype html>
+<html lang="es-CO" class={`theme-${theme}`}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1d4ed8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={fonts} rel="stylesheet" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @import "../styles/themes/v1.css";
+  @import "../styles/themes/v2.css";
+  @import "../styles/themes/v3.css";
+  @import "../styles/themes/v4.css";
+</style>

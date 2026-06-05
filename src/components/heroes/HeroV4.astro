@@ -1,0 +1,129 @@
+---
+import { store } from "../../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../../lib/whatsapp";
+
+const wa = whatsappUrl(defaultOrderMessage);
+const heroImage = Astro.props.heroImage;
+---
+
+<section class="hero-v4" id="inicio">
+  <div class="sus-container">
+    <p class="hero-v4__eyebrow">Propuesta editorial · azul marca</p>
+    <div class="hero-v4__grid">
+      <div class="hero-v4__copy">
+        <h1>
+          Tu imagen y tu hogar, <span>en un solo lugar</span>
+        </h1>
+        <p class="hero-v4__lead">{store.heroExtended}</p>
+        <p class="hero-v4__brand">{store.name} {store.nameAccent}</p>
+        <div class="hero-v4__actions">
+          <a class="sus-btn sus-btn--primary" href={wa} target="_blank" rel="noopener noreferrer">Pedir por WhatsApp</a>
+          <a class="sus-btn sus-btn--outline" href="#catalogos">Ver catálogos</a>
+        </div>
+      </div>
+      <figure class="hero-v4__figure">
+        <img src={heroImage} alt="Colección STEP UP STORE" width="800" height="600" loading="eager" />
+        <figcaption>{store.sloganLine1} {store.sloganLine2}</figcaption>
+      </figure>
+    </div>
+    <ul class="hero-v4__pills" aria-label="Categorías destacadas">
+      <li>Tenis</li>
+      <li>Ropa</li>
+      <li>Hogar</li>
+      <li>Accesorios</li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero-v4 {
+    padding: 3rem 0 2rem;
+    background: var(--hero-bg);
+    color: var(--hero-text);
+  }
+  .hero-v4__eyebrow {
+    margin: 0 0 1.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+  .hero-v4__grid {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  .hero-v4 h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+    line-height: 1.15;
+    font-weight: 600;
+  }
+  .hero-v4 h1 span {
+    color: var(--primary);
+  }
+  .hero-v4__lead {
+    margin: 1.25rem 0;
+    font-size: 1.15rem;
+    color: var(--hero-muted);
+    max-width: 32rem;
+  }
+  .hero-v4__brand {
+    margin: 0 0 1.5rem;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .hero-v4__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero-v4__figure {
+    margin: 0;
+    background: var(--card-bg);
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+  }
+  .hero-v4__figure img {
+    border-radius: calc(var(--radius) - 8px);
+    width: 100%;
+    object-fit: cover;
+    max-height: 380px;
+  }
+  .hero-v4__figure figcaption {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .hero-v4__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hero-v4__pills li {
+    padding: 0.5rem 1.1rem;
+    background: var(--primary-soft);
+    color: var(--primary-dark);
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  @media (min-width: 860px) {
+    .hero-v4__grid {
+      grid-template-columns: 1.1fr 0.9fr;
+    }
+  }
+</style>

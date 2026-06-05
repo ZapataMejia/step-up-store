@@ -1,0 +1,91 @@
+---
+import { howToBuy } from "../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../lib/whatsapp";
+
+const wa = whatsappUrl(defaultOrderMessage);
+---
+
+<section class="sus-section" id="como-comprar">
+  <div class="sus-container sus-how">
+    <div>
+      <p class="sus-section__eyebrow">Ventas digitales</p>
+      <h2 class="sus-section__title">Cómo comprar</h2>
+      <p class="sus-section__lead">
+        Sin carrito complicado: pedidos directos por WhatsApp, como ya lo hacen con el catálogo.
+      </p>
+      <ol class="sus-how__steps">
+        {howToBuy.map((step, i) => (
+          <li>
+            <span class="sus-how__num">{i + 1}</span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
+      <a class="sus-btn sus-btn--primary" href={wa} target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>
+    </div>
+    <aside class="sus-how__aside">
+      <p class="sus-how__aside-title">¿Tienes el catálogo en PDF o fotos?</p>
+      <p>Envíanos captura o código del producto y te respondemos con disponibilidad y precio.</p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .sus-how {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (min-width: 800px) {
+    .sus-how {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+  .sus-how__steps {
+    margin: 1.5rem 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 1rem;
+  }
+  .sus-how__steps li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 1.1rem;
+    background: var(--bg-muted);
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+  }
+  .sus-how__num {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 800;
+  }
+  .sus-how__aside {
+    padding: 1.5rem;
+    background: var(--black);
+    color: #fff;
+    border-radius: var(--radius);
+  }
+  .sus-how__aside-title {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  html.theme-v4 .sus-how__aside-title {
+    text-transform: none;
+  }
+  .sus-how__aside p:last-child {
+    margin: 0;
+    color: #cbd5e1;
+  }
+</style>

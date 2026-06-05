@@ -1,0 +1,99 @@
+---
+import { categories } from "../data/store";
+import { whatsappUrl } from "../lib/whatsapp";
+
+interface Props {
+  layout?: "grid" | "bento";
+}
+
+const { layout = "grid" } = Astro.props;
+---
+
+<section class={`sus-section sus-section--muted sus-cats-section ${layout === "bento" ? "sus-cats-section--bento" : ""}`} id="categorias">
+  <div class="sus-container">
+    <p class="sus-section__eyebrow">Catálogo</p>
+    <h2 class="sus-section__title">Todo lo que manejamos</h2>
+    <p class="sus-section__lead">
+      Ropa, tenis, deportivo, accesorios, hogar y más. Pide por WhatsApp con foto del catálogo o describe lo
+      que buscas.
+    </p>
+    <ul class={`sus-cats ${layout === "bento" ? "sus-cats--bento" : ""}`}>
+      {categories.map((cat, i) => {
+        const msg = `Hola STEP UP STORE, me interesa la categoría: ${cat.title}. `;
+        const href = whatsappUrl(msg);
+        return (
+          <li class={layout === "bento" && i === 0 ? "sus-cats__wide" : ""}>
+            <a class="sus-cats__card" href={href} target="_blank" rel="noopener noreferrer">
+              <span class="sus-cats__emoji" aria-hidden="true">{cat.emoji}</span>
+              <h3>{cat.title}</h3>
+              <p>{cat.description}</p>
+              <span class="sus-cats__link">Consultar →</span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sus-cats {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 640px) {
+    .sus-cats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .sus-cats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .sus-cats--bento {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .sus-cats--bento .sus-cats__wide {
+      grid-column: span 2;
+    }
+  }
+  .sus-cats__card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.35rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .sus-cats__card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+  }
+  .sus-cats__emoji {
+    font-size: 1.75rem;
+  }
+  .sus-cats__card h3 {
+    margin: 0.5rem 0 0.35rem;
+    font-size: 1.15rem;
+  }
+  .sus-cats__card p {
+    margin: 0;
+    flex: 1;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+  }
+  .sus-cats__link {
+    margin-top: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+</style>

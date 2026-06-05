@@ -1,0 +1,36 @@
+/* Editorial suave — claro, azul en acentos */
+html.theme-v4 {
+  --primary: #1d4ed8;
+  --primary-dark: #1e40af;
+  --primary-soft: #eef2ff;
+  --bg: #fdfcfa;
+  --bg-muted: #f5f3ef;
+  --text: #1c1917;
+  --text-muted: #57534e;
+  --header-bg: rgba(253, 252, 250, 0.9);
+  --header-text: #1c1917;
+  --header-border: #e7e5e4;
+  --hero-bg: #fdfcfa;
+  --hero-text: #1c1917;
+  --hero-muted: #57534e;
+  --card-bg: #ffffff;
+  --card-border: #e7e5e4;
+  --footer-bg: #1c1917;
+  --radius: 24px;
+  --shadow: 0 12px 40px rgba(28, 25, 23, 0.08);
+  --font-display: "Lora", Georgia, serif;
+}
+
+html.theme-v4 .sus-section__title {
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+html.theme-v4 .sus-btn {
+  border-radius: 999px;
+}
+
+html.theme-v4 .sus-section__eyebrow {
+  color: var(--primary-dark);
+}

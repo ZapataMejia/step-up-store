@@ -1,0 +1,54 @@
+---
+import { trustBadges } from "../data/store";
+
+const icons: Record<string, string> = {
+  cart: "🛒",
+  truck: "🚚",
+  quality: "✓",
+  secure: "🔒",
+};
+---
+
+<section class="sus-trust" aria-label="Garantías">
+  <div class="sus-container">
+    <ul class="sus-trust__list">
+      {trustBadges.map((b) => (
+        <li>
+          <span class="sus-trust__icon" aria-hidden="true">{icons[b.icon] ?? "★"}</span>
+          <span>{b.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sus-trust {
+    padding: 1.25rem 0;
+    background: var(--bg-muted);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .sus-trust__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sus-trust__list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  @media (min-width: 720px) {
+    .sus-trust__list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

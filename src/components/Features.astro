@@ -1,0 +1,74 @@
+---
+import { features } from "../data/store";
+
+const icons: Record<string, string> = {
+  shoe: "👟",
+  shirt: "👕",
+  quality: "✓",
+  style: "🛍️",
+  bag: "👜",
+  home: "🏠",
+};
+---
+
+<section class="sus-features" aria-label="Ventajas">
+  <div class="sus-container">
+    <ul class="sus-features__list">
+      {features.map((f) => (
+        <li>
+          <span class="sus-features__icon" aria-hidden="true">{icons[f.icon] ?? "★"}</span>
+          <span class="sus-features__label">{f.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sus-features {
+    padding: 1.5rem 0 2rem;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .sus-features__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sus-features__list li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius);
+    background: var(--card-bg);
+  }
+  .sus-features__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 2px solid var(--primary);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .sus-features__label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+  }
+  @media (min-width: 720px) {
+    .sus-features__list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

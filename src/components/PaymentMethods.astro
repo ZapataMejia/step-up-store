@@ -1,0 +1,70 @@
+---
+import { paymentMethods } from "../data/store";
+---
+
+<section class="sus-section sus-section--muted" id="pagos">
+  <div class="sus-container">
+    <p class="sus-section__eyebrow">Financiamiento</p>
+    <h2 class="sus-section__title">Paga a tu ritmo</h2>
+    <p class="sus-section__lead">
+      Addi, Sistecrédito y crédito personal para clientes conocidos. Al confirmar tu pedido por WhatsApp te
+      explicamos la opción que aplique.
+    </p>
+    <ul class="sus-pagos">
+      {paymentMethods.map((p) => (
+        <li class="sus-pagos__card">
+          <h3>{p.title}</h3>
+          <p>{p.description}</p>
+          {"href" in p && p.href ? (
+            <a class="sus-pagos__more" href={p.href} target="_blank" rel="noopener noreferrer">
+              Conocer {p.title} →
+            </a>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sus-pagos {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 640px) {
+    .sus-pagos {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .sus-pagos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .sus-pagos__card {
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+  }
+  .sus-pagos__card h3 {
+    margin: 0 0 0.5rem;
+  }
+  .sus-pagos__card p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+  .sus-pagos__more {
+    display: inline-block;
+    margin-top: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+  }
+  .sus-pagos__more:hover {
+    text-decoration: underline;
+  }
+</style>

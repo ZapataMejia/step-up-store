@@ -1,0 +1,59 @@
+---
+import { brands } from "../data/store";
+
+interface Props {
+  image?: string;
+  inverted?: boolean;
+}
+
+const { image = "/images/hero-street.png", inverted = false } = Astro.props;
+---
+
+<section class={`sus-section ${inverted ? "sus-section--inverted" : ""}`} id="marcas">
+  <div class="sus-container">
+    <p class="sus-section__eyebrow">Marcas</p>
+    <h2 class="sus-section__title">Top marcas, un solo lugar</h2>
+    <p class="sus-section__lead">Trabajamos con las marcas que tus clientes ya conocen y buscan en catálogo.</p>
+    <ul class="sus-brands">
+      {brands.map((b) => (
+        <li>{b}</li>
+      ))}
+    </ul>
+    <figure class="sus-brands__visual">
+      <img src={image} alt="Estilo STEP UP STORE" width="1200" height="800" loading="lazy" />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .sus-section--inverted {
+    background: var(--bg-muted);
+  }
+  .sus-brands {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sus-brands li {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  .sus-brands__visual {
+    margin: 2rem 0 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .sus-brands__visual img {
+    width: 100%;
+    object-fit: cover;
+    max-height: 420px;
+  }
+</style>

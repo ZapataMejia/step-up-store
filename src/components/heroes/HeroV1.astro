@@ -1,0 +1,120 @@
+---
+import Logo from "../Logo.astro";
+import { store } from "../../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../../lib/whatsapp";
+
+const wa = whatsappUrl(defaultOrderMessage);
+const heroImage = Astro.props.heroImage;
+---
+
+<section class="hero-v1" id="inicio">
+  <div class="sus-container hero-v1__grid">
+    <div class="hero-v1__copy">
+      <Logo size="lg" />
+      <p class="hero-v1__brand">
+        <span>{store.name}</span>
+        <span class="hero-v1__rule" aria-hidden="true"></span>
+        <span class="hero-v1__accent">{store.nameAccent}</span>
+        <span class="hero-v1__rule" aria-hidden="true"></span>
+      </p>
+      <p class="hero-v1__tag">{store.tagline}</p>
+      <h1 class="hero-v1__title">
+        {store.sloganLine1}
+        <span>{store.sloganLine2}</span>
+      </h1>
+      <p class="hero-v1__value">{store.valueProp}</p>
+      <div class="hero-v1__actions">
+        <a class="sus-btn sus-btn--primary" href={wa} target="_blank" rel="noopener noreferrer">{store.ctaOnline}</a>
+        <a class="sus-btn sus-btn--outline" href="#categorias">Ver categorías</a>
+      </div>
+      <p class="hero-v1__ship"><span aria-hidden="true">🛒</span> {store.shippingNote}</p>
+    </div>
+    <div class="hero-v1__visual">
+      <img src={heroImage} alt="STEP UP STORE — tenis y ropa de marcas top" width="900" height="900" loading="eager" fetchpriority="high" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-v1 {
+    padding: 2.5rem 0 3rem;
+    background: var(--hero-bg);
+    color: var(--hero-text);
+  }
+  .hero-v1__grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  .hero-v1__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0.75rem 0 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+  }
+  .hero-v1__rule {
+    flex: 1;
+    max-width: 2.5rem;
+    height: 2px;
+    background: var(--card-border);
+  }
+  .hero-v1__accent {
+    color: var(--primary);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+  }
+  .hero-v1__tag {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--hero-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .hero-v1__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 8vw, 4.5rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .hero-v1__title span {
+    display: block;
+    color: var(--primary);
+  }
+  .hero-v1__value {
+    margin: 1rem 0 1.5rem;
+    font-weight: 600;
+    color: var(--hero-muted);
+  }
+  .hero-v1__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .hero-v1__ship {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0.65rem 1rem;
+    background: var(--black);
+    color: #fff;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  .hero-v1__visual img {
+    border-radius: calc(var(--radius) + 6px);
+    box-shadow: var(--shadow);
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  @media (min-width: 900px) {
+    .hero-v1__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

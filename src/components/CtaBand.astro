@@ -1,0 +1,45 @@
+---
+import { store } from "../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../lib/whatsapp";
+
+const wa = whatsappUrl(defaultOrderMessage);
+---
+
+<section class="sus-cta">
+  <div class="sus-container sus-cta__inner">
+    <div>
+      <h2>{store.ctaOnline}</h2>
+      <p>{store.shippingNote} · WhatsApp {store.whatsappDisplay}</p>
+    </div>
+    <a class="sus-btn sus-btn--dark" href={wa} target="_blank" rel="noopener noreferrer">Escribir ahora</a>
+  </div>
+</section>
+
+<style>
+  .sus-cta {
+    padding: 3rem 0;
+    background: linear-gradient(120deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+  }
+  .sus-cta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+  }
+  .sus-cta h2 {
+    margin: 0 0 0.35rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  html.theme-v4 .sus-cta h2 {
+    text-transform: none;
+  }
+  .sus-cta p {
+    margin: 0;
+    opacity: 0.92;
+  }
+</style>

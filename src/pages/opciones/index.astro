@@ -1,0 +1,54 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { themes } from "../../data/themes";
+import { store } from "../../data/store";
+---
+
+<Layout title={`${store.name} ${store.nameAccent} · Elegir diseño`} description="Cuatro propuestas de sitio web. Color de marca: azul.">
+  <main class="picker">
+    <div class="sus-container">
+      <a class="picker__back" href="/">← Ver propuesta 1 (sitio principal)</a>
+      <p class="picker__brand">{store.name} {store.nameAccent}</p>
+      <h1 class="picker__title">Elige el estilo de la página</h1>
+      <p class="picker__lead">
+        Cuatro propuestas con <strong>azul</strong> de marca. La opción 1 ya está en la página de inicio; aquí puedes
+        comparar las otras tres.
+      </p>
+
+      <div class="picker__grid">
+        {themes.map((t) => (
+          <a
+            class:list={["picker__card", t.id === "v1" && "picker__card--featured"]}
+            href={t.id === "v1" ? "/" : `/opciones/${t.slug}`}
+          >
+            {t.tag ? <span class="picker__tag">{t.tag}</span> : null}
+            {t.id === "v1" ? <span class="picker__tag picker__tag--live">En inicio /</span> : null}
+            <h2>{t.name}</h2>
+            <p>{t.desc}</p>
+            <div class="picker__swatch" aria-hidden="true">
+              <span style="background:#1d4ed8"></span>
+              <span style="background:#ffffff;border:1px solid #e2e8f0"></span>
+              <span style={t.id === "v2" || t.id === "v3" ? "background:#0a0a0a" : "background:#f8fafc"}></span>
+            </div>
+            <span class="picker__link">{t.id === "v1" ? "Abrir inicio →" : "Ver propuesta →"}</span>
+          </a>
+        ))}
+      </div>
+
+      <p class="picker__banner">
+        Favorita del equipo: <strong>Clásico azul</strong> — la que ya ves en <a href="/">la portada</a>.
+      </p>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .picker__tag--live {
+    background: #0a0a0a;
+    margin-left: 0.35rem;
+  }
+  .picker__banner a {
+    color: #fff;
+    font-weight: 800;
+  }
+</style>

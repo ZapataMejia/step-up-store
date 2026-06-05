@@ -1,0 +1,25 @@
+/* Premium contraste — negro + azul eléctrico */
+html.theme-v3 {
+  --primary: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --primary-soft: #172554;
+  --bg: #fafafa;
+  --bg-muted: #f4f4f5;
+  --text: #09090b;
+  --text-muted: #52525b;
+  --header-bg: rgba(9, 9, 11, 0.96);
+  --header-text: #fafafa;
+  --header-border: #27272a;
+  --hero-bg: #09090b;
+  --hero-text: #fafafa;
+  --hero-muted: #d4d4d8;
+  --card-bg: #ffffff;
+  --card-border: #e4e4e7;
+  --footer-bg: #09090b;
+  --radius: 4px;
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+html.theme-v3 .sus-section__title {
+  letter-spacing: 0.12em;
+}

@@ -1,0 +1,118 @@
+---
+import Logo from "./Logo.astro";
+import type { ThemeId } from "../data/themes";
+import { store } from "../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../lib/whatsapp";
+
+interface Props {
+  themeId?: ThemeId;
+}
+
+const { themeId = "v1" } = Astro.props;
+const wa = whatsappUrl(defaultOrderMessage);
+const logoLight = themeId === "v2" || themeId === "v3";
+
+const links = [
+  { href: "#categorias", label: "Categorías" },
+  { href: "#catalogos", label: "Catálogos" },
+  { href: "#marcas", label: "Marcas" },
+  { href: "#como-comprar", label: "Cómo comprar" },
+  { href: "#pagos", label: "Pagos" },
+];
+---
+
+<header class="sus-header">
+  <div class="sus-container sus-header__inner">
+    <a class="sus-header__brand" href="#inicio" aria-label={`${store.name} ${store.nameAccent} — inicio`}>
+      <Logo size="sm" variant={logoLight ? "light" : "default"} />
+      <span class="sus-header__wordmark">
+        <span class="sus-header__name">{store.name}</span>
+        <span class="sus-header__accent">{store.nameAccent}</span>
+      </span>
+    </a>
+    <nav class="sus-header__nav" aria-label="Principal">
+      {links.map((l) => (
+        <a href={l.href}>{l.label}</a>
+      ))}
+    </nav>
+    <a class="sus-btn sus-btn--primary sus-header__cta" href={wa} target="_blank" rel="noopener noreferrer">
+      Pedir por WhatsApp
+    </a>
+  </div>
+</header>
+
+<style>
+  .sus-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--header-h);
+    background: var(--header-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--header-border);
+    color: var(--header-text);
+  }
+  .sus-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: var(--header-h);
+  }
+  .sus-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .sus-header__wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .sus-header__name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+  }
+  .sus-header__accent {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+  .sus-header__nav {
+    display: none;
+    gap: 1.25rem;
+  }
+  .sus-header__nav a {
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  .sus-header__nav a:hover {
+    color: var(--primary);
+  }
+  html.theme-v2 .sus-header__nav a,
+  html.theme-v3 .sus-header__nav a {
+    color: var(--hero-muted);
+  }
+  .sus-header__cta {
+    font-size: 0.82rem;
+    padding: 0.65rem 1rem;
+    white-space: nowrap;
+  }
+  @media (min-width: 860px) {
+    .sus-header__nav {
+      display: flex;
+    }
+  }
+  @media (max-width: 480px) {
+    .sus-header__wordmark {
+      display: none;
+    }
+  }
+</style>

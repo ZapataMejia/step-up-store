@@ -1,0 +1,104 @@
+---
+import Logo from "../Logo.astro";
+import { store } from "../../data/store";
+import { whatsappUrl, defaultOrderMessage } from "../../lib/whatsapp";
+
+const wa = whatsappUrl(defaultOrderMessage);
+const heroImage = Astro.props.heroImage;
+---
+
+<section class="hero-v3" id="inicio">
+  <div class="sus-container hero-v3__grid">
+    <div class="hero-v3__copy">
+      <Logo size="lg" variant="light" />
+      <p class="hero-v3__brand">{store.name} <span>{store.nameAccent}</span></p>
+      <p class="hero-v3__tag">{store.tagline}</p>
+      <h1 class="hero-v3__title">
+        {store.sloganLine1}
+        <span>{store.sloganLine2}</span>
+      </h1>
+      <p class="hero-v3__ext">{store.heroExtended}</p>
+      <a class="sus-btn sus-btn--primary" href={wa} target="_blank" rel="noopener noreferrer">{store.ctaOnline}</a>
+    </div>
+    <div class="hero-v3__visual">
+      <img src={heroImage} alt="STEP UP STORE — moda y hogar" width="1000" height="700" loading="eager" />
+    </div>
+  </div>
+  <div class="hero-v3__bar">
+    <div class="sus-container hero-v3__bar-inner">
+      <span>{store.shippingNote}</span>
+      <span>·</span>
+      <span>WhatsApp {store.whatsappDisplay}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-v3 {
+    background: var(--hero-bg);
+    color: var(--hero-text);
+  }
+  .hero-v3__grid {
+    display: grid;
+    gap: 2rem;
+    padding: 2.5rem 0 2rem;
+    align-items: center;
+  }
+  .hero-v3__brand {
+    margin: 0.75rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .hero-v3__brand span {
+    color: var(--primary);
+  }
+  .hero-v3__tag {
+    margin: 0.35rem 0 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--hero-muted);
+  }
+  .hero-v3__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .hero-v3__title span {
+    color: var(--primary);
+    display: block;
+  }
+  .hero-v3__ext {
+    margin: 1rem 0 1.5rem;
+    max-width: 28rem;
+    color: var(--hero-muted);
+  }
+  .hero-v3__visual img {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .hero-v3__bar {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.85rem 0;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hero-v3__bar-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    justify-content: center;
+  }
+  @media (min-width: 900px) {
+    .hero-v3__grid {
+      grid-template-columns: 1fr 1.05fr;
+    }
+  }
+</style>

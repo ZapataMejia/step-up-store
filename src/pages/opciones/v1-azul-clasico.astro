@@ -1,0 +1,11 @@
+---
+import VariantLayout from "../../layouts/VariantLayout.astro";
+import LandingPage from "../../components/LandingPage.astro";
+import { store } from "../../data/store";
+
+const slug = "v1-azul-clasico";
+---
+
+<VariantLayout title={`${store.name} · Clásico azul`} theme="v1" description="Propuesta 1 — estilo limpio blanco y azul.">
+  <LandingPage themeId="v1" slug={slug} />
+</VariantLayout>

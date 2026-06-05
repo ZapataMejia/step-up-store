@@ -1,0 +1,113 @@
+---
+import { store } from "../data/store";
+import { whatsappUrl } from "../lib/whatsapp";
+
+const year = new Date().getFullYear();
+const wa = whatsappUrl();
+const hasFacebook = store.facebookUrl.length > 0;
+---
+
+<footer class="sus-footer">
+  <div class="sus-container sus-footer__grid">
+    <div>
+      <p class="sus-footer__brand">
+        {store.name} <span>{store.nameAccent}</span>
+      </p>
+      <p class="sus-footer__tag">{store.tagline}</p>
+    </div>
+    <div>
+      <p class="sus-footer__label">Contacto</p>
+      <ul>
+        <li>
+          <a href={wa} target="_blank" rel="noopener noreferrer">WhatsApp {store.whatsappDisplay}</a>
+        </li>
+        {hasFacebook ? (
+          <li>
+            <a href={store.facebookUrl} target="_blank" rel="noopener noreferrer">{store.facebookLabel}</a>
+          </li>
+        ) : (
+          <li class="sus-footer__muted">Facebook — enlace pendiente</li>
+        )}
+      </ul>
+    </div>
+    <div>
+      <p class="sus-footer__label">Enlaces</p>
+      <ul>
+        <li><a href="#categorias">Categorías</a></li>
+        <li><a href="#catalogos">Catálogos</a></li>
+        <li><a href="#como-comprar">Cómo comprar</a></li>
+        <li><a href="#pagos">Pagos</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="sus-footer__copy">© {year} {store.name} {store.nameAccent}. Todos los derechos reservados.</p>
+</footer>
+
+<style>
+  .sus-footer {
+    padding: 2.5rem 0 1.5rem;
+    background: var(--footer-bg);
+    color: var(--footer-text);
+  }
+  .sus-footer__grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 720px) {
+    .sus-footer__grid {
+      grid-template-columns: 1.4fr 1fr 1fr;
+    }
+  }
+  .sus-footer__brand {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  html.theme-v4 .sus-footer__brand {
+    text-transform: none;
+  }
+  .sus-footer__brand span {
+    color: var(--primary);
+  }
+  .sus-footer__tag {
+    margin: 0.35rem 0 0;
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+  .sus-footer__label {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .sus-footer ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sus-footer a {
+    color: #f8fafc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .sus-footer a:hover {
+    color: var(--primary);
+  }
+  .sus-footer li + li {
+    margin-top: 0.35rem;
+  }
+  .sus-footer__muted {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+  .sus-footer__copy {
+    margin: 2rem 0 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #64748b;
+  }
+</style>

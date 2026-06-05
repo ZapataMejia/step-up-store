@@ -1,0 +1,20 @@
+/* Clásico azul — estilo 1 */
+html.theme-v1 {
+  --primary: #1d4ed8;
+  --primary-dark: #1e3a8a;
+  --primary-soft: #eff6ff;
+  --bg: #ffffff;
+  --bg-muted: #f8fafc;
+  --text: #0a0a0a;
+  --text-muted: #334155;
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --header-text: #0a0a0a;
+  --header-border: #e2e8f0;
+  --hero-bg: linear-gradient(135deg, #fff 55%, #eff6ff 100%);
+  --hero-text: #0a0a0a;
+  --hero-muted: #334155;
+  --card-bg: #ffffff;
+  --card-border: #dbeafe;
+  --footer-bg: #0a0a0a;
+  --radius: 14px;
+}
