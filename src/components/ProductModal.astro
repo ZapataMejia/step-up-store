@@ -1,0 +1,661 @@
+---
+// Modal de detalle de producto. Se monta una sola vez por página.
+// Lee los datos desde el atributo data-product de cada .sus-prod y se abre
+// al hacer clic en cualquier elemento con [data-open-detail].
+---
+
+<div class="pm" data-product-modal hidden>
+  <div class="pm__backdrop" data-pm-close></div>
+  <div class="pm__dialog" role="dialog" aria-modal="true" aria-labelledby="pm-title">
+    <button type="button" class="pm__close" data-pm-close aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"></path>
+      </svg>
+    </button>
+
+    <div class="pm__grid">
+      <div class="pm__gallery">
+        <div class="pm__stage" data-pm-stage>
+          <img class="pm__img" data-pm-img alt="" hidden />
+          <div class="pm__placeholder" data-pm-placeholder hidden>
+            <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="14" rx="2" />
+              <circle cx="8.5" cy="9" r="1.6" />
+              <path d="m4 17 5-5 4 3.5L17 12l3 3" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Foto próximamente</span>
+          </div>
+          <span class="pm__zoomhint" data-pm-zoomhint>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m21 21-4.3-4.3M11 8v6M8 11h6" stroke-linecap="round"></path>
+            </svg>
+            Toca para ampliar
+          </span>
+        </div>
+        <div class="pm__thumbs" data-pm-thumbs></div>
+      </div>
+
+      <div class="pm__info">
+        <p class="pm__brand" data-pm-brand hidden></p>
+        <h2 class="pm__title" id="pm-title" data-pm-title></h2>
+        <div class="pm__meta">
+          <span class="pm__ref" data-pm-ref hidden></span>
+          <span class="pm__gender" data-pm-gender hidden></span>
+          <span class="pm__sold" data-pm-sold hidden>Agotado</span>
+        </div>
+        <p class="pm__price" data-pm-price></p>
+        <p class="pm__desc" data-pm-desc hidden></p>
+
+        <div class="pm__block" data-pm-colors-block hidden>
+          <p class="pm__label">
+            Color <span class="pm__label-value" data-pm-color-name></span>
+          </p>
+          <div class="pm__swatches" data-pm-swatches></div>
+        </div>
+
+        <div class="pm__block" data-pm-sizes-block hidden>
+          <p class="pm__label">
+            Talla <span class="pm__optional">· elige la tuya</span>
+          </p>
+          <div class="pm__sizes" data-pm-sizes></div>
+        </div>
+
+        <a class="pm__cta" data-pm-cta target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"></path>
+          </svg>
+          Lo quiero por WhatsApp
+        </a>
+        <p class="pm__note">Coordinamos tu pedido y envío directamente por WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initProductModal() {
+    const modal = document.querySelector<HTMLElement>("[data-product-modal]");
+    if (!modal) return;
+
+    const q = <T extends HTMLElement>(sel: string) => modal.querySelector<T>(sel);
+    const stage = q<HTMLElement>("[data-pm-stage]")!;
+    const imgEl = q<HTMLImageElement>("[data-pm-img]")!;
+    const placeholder = q<HTMLElement>("[data-pm-placeholder]")!;
+    const zoomHint = q<HTMLElement>("[data-pm-zoomhint]")!;
+    const thumbs = q<HTMLElement>("[data-pm-thumbs]")!;
+    const brandEl = q<HTMLElement>("[data-pm-brand]")!;
+    const titleEl = q<HTMLElement>("[data-pm-title]")!;
+    const refEl = q<HTMLElement>("[data-pm-ref]")!;
+    const genderEl = q<HTMLElement>("[data-pm-gender]")!;
+    const soldEl = q<HTMLElement>("[data-pm-sold]")!;
+    const priceEl = q<HTMLElement>("[data-pm-price]")!;
+    const descEl = q<HTMLElement>("[data-pm-desc]")!;
+    const colorsBlock = q<HTMLElement>("[data-pm-colors-block]")!;
+    const colorName = q<HTMLElement>("[data-pm-color-name]")!;
+    const swatches = q<HTMLElement>("[data-pm-swatches]")!;
+    const sizesBlock = q<HTMLElement>("[data-pm-sizes-block]")!;
+    const sizesEl = q<HTMLElement>("[data-pm-sizes]")!;
+    const cta = q<HTMLAnchorElement>("[data-pm-cta]")!;
+
+    type Color = { name: string; hex: string; img: string };
+    type Detail = {
+      id: string; name: string; brand: string; reference: string; price: string;
+      description: string; gender: string; sizes: string[]; colors: Color[];
+      images: string[]; url: string; soldOut: boolean;
+    };
+
+    let waBase = "";
+    let current: Detail | null = null;
+    let currentColor = "";
+    let currentSize = "";
+
+    function buildMessage(d: Detail, color: string, size: string) {
+      const lines = ["Hola STEP UP STORE 👋 Me interesa este producto:", "", `• Producto: ${d.name}`];
+      if (d.reference) lines.push(`• Referencia: ${d.reference}`);
+      if (color) lines.push(`• Color: ${color}`);
+      if (size) lines.push(`• Talla: ${size}`);
+      if (d.price) lines.push(`• Precio: ${d.price}`);
+      if (d.url) lines.push("", d.url);
+      lines.push("", "¿Está disponible?");
+      return lines.join("\n");
+    }
+
+    function updateCta() {
+      if (!current) return;
+      const text = buildMessage(current, currentColor, currentSize);
+      cta.href = waBase ? `${waBase}?text=${encodeURIComponent(text)}` : "#";
+    }
+
+    function setImage(src: string) {
+      stage.classList.remove("is-zoomed");
+      if (src) {
+        imgEl.src = src;
+        imgEl.hidden = false;
+        placeholder.hidden = true;
+        zoomHint.hidden = false;
+      } else {
+        imgEl.hidden = true;
+        placeholder.hidden = false;
+        zoomHint.hidden = true;
+      }
+    }
+
+    function selectColor(name: string) {
+      currentColor = name;
+      colorName.textContent = name || "";
+      const color = current?.colors.find((c) => c.name === name);
+      if (color?.img) setImage(color.img);
+      swatches.querySelectorAll<HTMLElement>("[data-color]").forEach((s) => {
+        const active = s.dataset.color === name;
+        s.classList.toggle("is-active", active);
+        s.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+      thumbs.querySelectorAll<HTMLElement>("[data-thumb-color]").forEach((t) => {
+        t.classList.toggle("is-active", t.dataset.thumbColor === name && Boolean(color?.img));
+      });
+      updateCta();
+    }
+
+    function open(detail: Detail, base: string) {
+      current = detail;
+      waBase = base;
+      currentColor = detail.colors[0]?.name || "";
+      currentSize = "";
+
+      brandEl.textContent = detail.brand;
+      brandEl.hidden = !detail.brand;
+      titleEl.textContent = detail.name;
+      refEl.textContent = detail.reference ? `Ref. ${detail.reference}` : "";
+      refEl.hidden = !detail.reference;
+      genderEl.textContent = detail.gender;
+      genderEl.hidden = !detail.gender;
+      soldEl.hidden = !detail.soldOut;
+      priceEl.textContent = detail.price;
+      descEl.textContent = detail.description;
+      descEl.hidden = !detail.description;
+
+      // Galería: una vista por color con foto, o las imágenes del producto.
+      const colorViews = detail.colors.filter((c) => c.img).map((c) => ({ src: c.img, color: c.name }));
+      const views = colorViews.length
+        ? colorViews
+        : detail.images.map((src) => ({ src, color: detail.colors[0]?.name || "" }));
+
+      thumbs.innerHTML = "";
+      if (views.length > 1) {
+        thumbs.hidden = false;
+        views.forEach((v) => {
+          const t = document.createElement("button");
+          t.type = "button";
+          t.className = "pm__thumb";
+          t.dataset.thumbColor = v.color;
+          t.innerHTML = `<img src="${v.src}" alt="${v.color}" loading="lazy" />`;
+          t.addEventListener("click", () => {
+            setImage(v.src);
+            if (v.color) selectColor(v.color);
+            else {
+              thumbs.querySelectorAll(".pm__thumb").forEach((x) => x.classList.remove("is-active"));
+              t.classList.add("is-active");
+            }
+          });
+          thumbs.appendChild(t);
+        });
+      } else {
+        thumbs.hidden = true;
+      }
+
+      // Colores (swatches)
+      swatches.innerHTML = "";
+      if (detail.colors.length > 0) {
+        colorsBlock.hidden = false;
+        detail.colors.forEach((c) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "pm__color";
+          b.dataset.color = c.name;
+          b.setAttribute("aria-label", c.name);
+          b.setAttribute("aria-pressed", "false");
+          const dot = document.createElement("span");
+          dot.className = "pm__color-dot";
+          dot.style.setProperty("--swatch", c.hex || "#888");
+          if (c.img) {
+            dot.style.backgroundImage = `url("${c.img}")`;
+            dot.classList.add("has-img");
+          }
+          const label = document.createElement("span");
+          label.className = "pm__color-name";
+          label.textContent = c.name;
+          b.append(dot, label);
+          b.addEventListener("click", () => selectColor(c.name));
+          swatches.appendChild(b);
+        });
+      } else {
+        colorsBlock.hidden = true;
+      }
+
+      // Tallas
+      sizesEl.innerHTML = "";
+      if (detail.sizes.length > 0) {
+        sizesBlock.hidden = false;
+        detail.sizes.forEach((s) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "pm__size";
+          b.textContent = s;
+          b.addEventListener("click", () => {
+            const wasActive = b.classList.contains("is-active");
+            sizesEl.querySelectorAll(".pm__size").forEach((x) => x.classList.remove("is-active"));
+            currentSize = wasActive ? "" : s;
+            if (!wasActive) b.classList.add("is-active");
+            updateCta();
+          });
+          sizesEl.appendChild(b);
+        });
+      } else {
+        sizesBlock.hidden = true;
+      }
+
+      // Imagen inicial
+      const first = views[0]?.src || "";
+      setImage(first);
+      colorName.textContent = currentColor;
+      if (currentColor) selectColor(currentColor);
+      updateCta();
+
+      modal.hidden = false;
+      document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => modal.classList.add("is-open"));
+    }
+
+    function close() {
+      modal.classList.remove("is-open");
+      document.body.style.overflow = "";
+      stage.classList.remove("is-zoomed");
+      window.setTimeout(() => {
+        modal.hidden = true;
+      }, 180);
+    }
+
+    // Zoom: clic alterna ampliación; el mouse mueve el punto de enfoque.
+    stage.addEventListener("click", () => {
+      if (imgEl.hidden) return;
+      stage.classList.toggle("is-zoomed");
+    });
+    stage.addEventListener("mousemove", (e) => {
+      if (!stage.classList.contains("is-zoomed")) return;
+      const r = stage.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      imgEl.style.transformOrigin = `${x}% ${y}%`;
+    });
+
+    // Abrir desde cualquier tarjeta (delegación de eventos).
+    document.addEventListener("click", (e) => {
+      const trigger = (e.target as HTMLElement).closest<HTMLElement>("[data-open-detail]");
+      if (!trigger) return;
+      const card = trigger.closest<HTMLElement>(".sus-prod");
+      if (!card?.dataset.product) return;
+      e.preventDefault();
+      let data: Detail;
+      try {
+        data = JSON.parse(card.dataset.product);
+      } catch {
+        return;
+      }
+      const ctaHref = card.querySelector<HTMLAnchorElement>("[data-wa-cta]")?.href || "";
+      let base = "";
+      try {
+        const u = new URL(ctaHref);
+        base = `${u.origin}${u.pathname}`;
+      } catch {
+        /* noop */
+      }
+      open(data, base);
+    });
+
+    modal.querySelectorAll<HTMLElement>("[data-pm-close]").forEach((el) =>
+      el.addEventListener("click", close)
+    );
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.hidden) close();
+    });
+  }
+
+  initProductModal();
+</script>
+
+<style is:global>
+  /* Global porque los chips de color, miniaturas y tallas se crean en JS
+     y no reciben el data-attribute de scope de Astro. Todo va prefijado .pm */
+  .pm {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+  }
+  .pm[hidden] {
+    display: none;
+  }
+  .pm__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 14, 0.62);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+  }
+  .pm.is-open .pm__backdrop {
+    opacity: 1;
+  }
+  .pm__dialog {
+    position: relative;
+    width: min(960px, 100%);
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
+    background: var(--card-bg, #fff);
+    color: var(--text, #111);
+    border: 1px solid var(--card-border, #e5e7eb);
+    border-radius: 18px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+    transform: translateY(12px) scale(0.98);
+    opacity: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .pm.is-open .pm__dialog {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  .pm__close {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 2.3rem;
+    height: 2.3rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: #111;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    transition: transform 0.12s ease;
+  }
+  .pm__close:hover {
+    transform: scale(1.08);
+  }
+  .pm__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  @media (min-width: 760px) {
+    .pm__grid {
+      grid-template-columns: 1.05fr 1fr;
+    }
+  }
+
+  .pm__gallery {
+    padding: 1rem;
+    background: var(--bg-muted, #f4f4f5);
+  }
+  .pm__stage {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    cursor: zoom-in;
+    display: grid;
+    place-items: center;
+  }
+  .pm__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+  }
+  .pm__stage.is-zoomed {
+    cursor: zoom-out;
+  }
+  .pm__stage.is-zoomed .pm__img {
+    transform: scale(2.2);
+  }
+  .pm__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted, #71717a);
+  }
+  .pm__zoomhint {
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.72rem;
+    pointer-events: none;
+  }
+  .pm__stage.is-zoomed .pm__zoomhint {
+    opacity: 0;
+  }
+  .pm__thumbs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+  .pm__thumb {
+    flex: 0 0 auto;
+    width: 3.6rem;
+    height: 3.6rem;
+    padding: 0;
+    border-radius: 9px;
+    border: 2px solid transparent;
+    background: #fff;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .pm__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pm__thumb.is-active {
+    border-color: var(--primary, #2563eb);
+  }
+
+  .pm__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1.5rem;
+  }
+  .pm__brand {
+    margin: 0;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary, #2563eb);
+  }
+  .pm__title {
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.15;
+  }
+  .pm__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .pm__ref {
+    font-size: 0.8rem;
+    color: var(--text-muted, #71717a);
+  }
+  .pm__gender {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.55rem;
+    border: 1px solid var(--card-border, #e5e7eb);
+    border-radius: 999px;
+    color: var(--text-muted, #71717a);
+  }
+  .pm__sold {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: #52525b;
+    color: #fff;
+  }
+  .pm__price {
+    margin: 0.2rem 0;
+    font-family: var(--font-display, inherit);
+    font-size: 1.8rem;
+    letter-spacing: 0.02em;
+  }
+  .pm__desc {
+    margin: 0;
+    color: var(--text-muted, #52525b);
+    line-height: 1.5;
+  }
+  .pm__block {
+    margin-top: 0.35rem;
+  }
+  .pm__label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin: 0 0 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted, #71717a);
+  }
+  .pm__label-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text, #111);
+  }
+  .pm__optional {
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-muted, #a1a1aa);
+  }
+
+  /* Colores como chips: punto de color + nombre */
+  .pm__swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .pm__color {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.7rem 0.4rem 0.45rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--card-border, #e5e7eb);
+    background: var(--card-bg, #fff);
+    color: var(--text, #111);
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
+  }
+  .pm__color:hover {
+    border-color: var(--primary, #2563eb);
+    transform: translateY(-1px);
+  }
+  .pm__color.is-active {
+    border-color: var(--primary, #2563eb);
+    box-shadow: 0 0 0 1.5px var(--primary, #2563eb), 0 4px 12px rgba(37, 99, 235, 0.18);
+  }
+  .pm__color-dot {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background-color: var(--swatch);
+    background-size: cover;
+    background-position: center;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+    flex: 0 0 auto;
+  }
+  .pm__color-name {
+    white-space: nowrap;
+  }
+
+  /* Tallas */
+  .pm__sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .pm__size {
+    display: grid;
+    place-items: center;
+    min-width: 3rem;
+    height: 3rem;
+    padding: 0 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 12px;
+    border: 1.5px solid var(--card-border, #e5e7eb);
+    background: var(--card-bg, #fff);
+    color: var(--text, #111);
+    cursor: pointer;
+    transition: border-color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease, background 0.14s ease;
+  }
+  .pm__size:hover {
+    border-color: var(--primary, #2563eb);
+    transform: translateY(-1px);
+  }
+  .pm__size.is-active {
+    background: var(--primary, #2563eb);
+    border-color: var(--primary, #2563eb);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
+  }
+  .pm__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    background: #25d366;
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: transform 0.12s ease, filter 0.12s ease;
+  }
+  .pm__cta:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+  }
+  .pm__note {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--text-muted, #71717a);
+    text-align: center;
+  }
+</style>

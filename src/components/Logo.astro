@@ -4,16 +4,15 @@ interface Props {
   variant?: "default" | "light";
 }
 
-const { size = "md", variant = "default" } = Astro.props;
+const { size = "md" } = Astro.props;
 const blue = "#1d4ed8";
-const black = variant === "light" ? "#ffffff" : "#0a0a0a";
 ---
 
 <span class={`sus-logo sus-logo--${size}`} aria-hidden="true">
   <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M12 8h28c18 0 30 12 30 28 0 14-8 24-22 28l18 24H44L28 66V88H12V8zm10 12v32c10-2 18-8 18-18 0-9-6-14-18-14z"
-      fill={black}></path>
+      fill="currentColor"></path>
     <path
       d="M40 8h28c18 0 30 12 30 28 0 14-8 24-22 28l18 24H72L56 66V88H40V8zm10 12v32c10-2 18-8 18-18 0-9-6-14-18-14z"
       fill={blue}

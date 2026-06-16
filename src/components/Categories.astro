@@ -1,50 +1,68 @@
 ---
-import { categories } from "../data/store";
-import { whatsappUrl } from "../lib/whatsapp";
+import { categoryList, countByCategory } from "../data/products";
+import CategoryIcon from "./CategoryIcon.astro";
 
 interface Props {
   layout?: "grid" | "bento";
 }
 
 const { layout = "grid" } = Astro.props;
+
+const cats = categoryList.map((cat) => ({
+  ...cat,
+  count: countByCategory(cat.slug),
+}));
 ---
 
 <section class={`sus-section sus-section--muted sus-cats-section ${layout === "bento" ? "sus-cats-section--bento" : ""}`} id="categorias">
   <div class="sus-container">
-    <p class="sus-section__eyebrow">Catálogo</p>
-    <h2 class="sus-section__title">Todo lo que manejamos</h2>
-    <p class="sus-section__lead">
-      Ropa, tenis, deportivo, accesorios, hogar y más. Pide por WhatsApp con foto del catálogo o describe lo
-      que buscas.
-    </p>
-    <ul class={`sus-cats ${layout === "bento" ? "sus-cats--bento" : ""}`}>
-      {categories.map((cat, i) => {
-        const msg = `Hola STEP UP STORE, me interesa la categoría: ${cat.title}. `;
-        const href = whatsappUrl(msg);
-        return (
-          <li class={layout === "bento" && i === 0 ? "sus-cats__wide" : ""}>
-            <a class="sus-cats__card" href={href} target="_blank" rel="noopener noreferrer">
-              <span class="sus-cats__emoji" aria-hidden="true">{cat.emoji}</span>
+    <div class="sus-cats__head">
+      <div>
+        <p class="sus-section__eyebrow">Catálogo</p>
+        <h2 class="sus-section__title">Explora por categoría</h2>
+        <p class="sus-section__lead">
+          Entra a cualquier categoría, busca por marca, modelo o color y pídelo por WhatsApp con un clic.
+          Todo el catálogo, directo desde la página.
+        </p>
+      </div>
+    </div>
+
+    <ul class="sus-cats">
+      {cats.map((cat) => (
+        <li>
+          <a class="sus-cats__card" href={`/categoria/${cat.slug}`}>
+            <span class="sus-cats__icon" aria-hidden="true">
+              <CategoryIcon slug={cat.slug} size={26} />
+            </span>
+            <div class="sus-cats__text">
               <h3>{cat.title}</h3>
               <p>{cat.description}</p>
-              <span class="sus-cats__link">Consultar →</span>
-            </a>
-          </li>
-        );
-      })}
+            </div>
+            <div class="sus-cats__foot">
+              <span class="sus-cats__count">
+                {cat.count > 0 ? `${cat.count} producto${cat.count === 1 ? "" : "s"}` : "Próximamente"}
+              </span>
+              <span class="sus-cats__link" aria-hidden="true">Ver →</span>
+            </div>
+          </a>
+        </li>
+      ))}
     </ul>
   </div>
 </section>
 
 <style>
+  .sus-cats__head {
+    max-width: 46rem;
+  }
   .sus-cats {
     display: grid;
     gap: 1rem;
-    margin: 2rem 0 0;
+    margin: 2.25rem 0 0;
     padding: 0;
     list-style: none;
   }
-  @media (min-width: 640px) {
+  @media (min-width: 560px) {
     .sus-cats {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -53,46 +71,81 @@ const { layout = "grid" } = Astro.props;
     .sus-cats {
       grid-template-columns: repeat(3, 1fr);
     }
-    .sus-cats--bento {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    .sus-cats--bento .sus-cats__wide {
-      grid-column: span 2;
-    }
   }
   .sus-cats__card {
+    position: relative;
     display: flex;
     flex-direction: column;
+    gap: 0.85rem;
     height: 100%;
-    padding: 1.35rem;
+    padding: 1.5rem;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius);
     text-decoration: none;
     color: inherit;
-    box-shadow: var(--shadow);
-    transition: border-color 0.15s ease, transform 0.15s ease;
+    overflow: hidden;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .sus-cats__card::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), transparent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
   .sus-cats__card:hover {
     border-color: var(--primary);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
   }
-  .sus-cats__emoji {
-    font-size: 1.75rem;
+  .sus-cats__card:hover::after {
+    opacity: 1;
+  }
+  .sus-cats__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 14px;
+    background: var(--primary-soft);
+    border: 1px solid var(--card-border);
+    color: var(--primary);
+  }
+  .sus-cats__text {
+    flex: 1;
   }
   .sus-cats__card h3 {
-    margin: 0.5rem 0 0.35rem;
-    font-size: 1.15rem;
+    margin: 0 0 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
   .sus-cats__card p {
     margin: 0;
-    flex: 1;
     color: var(--text-muted);
     font-size: 0.92rem;
   }
-  .sus-cats__link {
-    margin-top: 1rem;
+  .sus-cats__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--card-border);
+  }
+  .sus-cats__count {
+    font-size: 0.78rem;
     font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .sus-cats__link {
+    font-weight: 800;
     color: var(--primary);
     font-size: 0.9rem;
   }

@@ -1,0 +1,364 @@
+---
+import VariantLayout from "../../layouts/VariantLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import WhatsAppFloat from "../../components/WhatsAppFloat.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import ProductModal from "../../components/ProductModal.astro";
+import CategoryIcon from "../../components/CategoryIcon.astro";
+import {
+  categoryList,
+  productsByCategory,
+  type CategoryMeta,
+  type Product,
+} from "../../data/products";
+import { store } from "../../data/store";
+
+export function getStaticPaths() {
+  return categoryList.map((cat) => ({
+    params: { slug: cat.slug },
+    props: { category: cat },
+  }));
+}
+
+interface Props {
+  category: CategoryMeta;
+}
+
+const { category } = Astro.props;
+const items: Product[] = productsByCategory(category.slug);
+
+// Marcas y géneros presentes en esta categoría (para los filtros).
+const brands = [...new Set(items.map((p) => p.brand).filter(Boolean))] as string[];
+const genders = category.genders ?? [];
+const gendersInUse = genders.filter((g) => items.some((p) => p.gender === g));
+
+const pageTitle = `${category.title} · ${store.name} ${store.nameAccent}`;
+const pageDescription = category.description;
+
+const productUrlFor = (id: string) =>
+  new URL(`/categoria/${category.slug}#${id}`, Astro.site).toString();
+---
+
+<VariantLayout title={pageTitle} theme="v2" description={pageDescription}>
+  <SiteHeader themeId="v2" />
+  <main class="cat-page">
+    <header class="cat-hero">
+      <div class="sus-container">
+        <a class="cat-hero__back" href="/#categorias">← Todas las categorías</a>
+        <p class="cat-hero__eyebrow">Catálogo</p>
+        <h1 class="cat-hero__title">
+          <span class="cat-hero__icon" aria-hidden="true">
+            <CategoryIcon slug={category.slug} size={34} />
+          </span>
+          {category.title}
+        </h1>
+        <p class="cat-hero__lead">{category.headline}</p>
+      </div>
+    </header>
+
+    <section class="sus-section cat-results" data-catalog>
+      <div class="sus-container">
+        <div class="cat-toolbar">
+          <div class="cat-search">
+            <svg class="cat-search__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m21 21-4.3-4.3" stroke-linecap="round"></path>
+            </svg>
+            <input
+              type="search"
+              class="cat-search__input"
+              data-search-input
+              placeholder={`Busca en ${category.title.toLowerCase()}: marca, modelo, color...`}
+              autocomplete="off"
+              aria-label={`Buscar en ${category.title}`}
+            />
+          </div>
+
+          {(brands.length > 0 || gendersInUse.length > 0) && (
+            <div class="cat-filters" data-filters>
+              <button type="button" class="cat-chip is-active" data-filter-type="all" data-filter-value="">
+                Todo
+              </button>
+              {gendersInUse.map((g) => (
+                <button type="button" class="cat-chip" data-filter-type="gender" data-filter-value={g}>
+                  {g}
+                </button>
+              ))}
+              {brands.map((b) => (
+                <button type="button" class="cat-chip" data-filter-type="brand" data-filter-value={b}>
+                  {b}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <p class="cat-count" data-count aria-live="polite"></p>
+
+        {items.length > 0 ? (
+          <ul class="cat-grid" data-grid>
+            {items.map((product) => (
+              <ProductCard product={product} productUrl={productUrlFor(product.id)} />
+            ))}
+          </ul>
+        ) : (
+          <div class="cat-empty">
+            <p>Aún estamos cargando los productos de esta categoría. 📦</p>
+            <a class="sus-btn sus-btn--primary" href="/#categorias">Ver otras categorías</a>
+          </div>
+        )}
+
+        <div class="cat-noresults" data-noresults hidden>
+          <p>No encontramos productos con esa búsqueda.</p>
+          <button type="button" class="sus-btn sus-btn--outline-light" data-clear>Limpiar filtros</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <ProductModal />
+  <SiteFooter />
+  <WhatsAppFloat />
+</VariantLayout>
+
+<script>
+  function initCatalog() {
+    const root = document.querySelector<HTMLElement>("[data-catalog]");
+    if (!root) return;
+
+    const input = root.querySelector<HTMLInputElement>("[data-search-input]");
+    const grid = root.querySelector<HTMLElement>("[data-grid]");
+    const cards = Array.from(root.querySelectorAll<HTMLElement>(".sus-prod"));
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>(".cat-chip"));
+    const countEl = root.querySelector<HTMLElement>("[data-count]");
+    const noResults = root.querySelector<HTMLElement>("[data-noresults]");
+
+    let query = "";
+    let activeBrand = "";
+    let activeGender = "";
+
+    function apply() {
+      let visible = 0;
+      cards.forEach((card) => {
+        const hay = card.dataset.search || "";
+        const brand = card.dataset.brand || "";
+        const gender = card.dataset.gender || "";
+        const matchQuery = !query || hay.includes(query);
+        const matchBrand = !activeBrand || brand === activeBrand;
+        const matchGender = !activeGender || gender === activeGender;
+        const show = matchQuery && matchBrand && matchGender;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      if (countEl) {
+        countEl.textContent =
+          visible === 0
+            ? ""
+            : `${visible} producto${visible === 1 ? "" : "s"}`;
+      }
+      if (noResults) noResults.hidden = visible !== 0;
+      if (grid) grid.hidden = visible === 0;
+    }
+
+    input?.addEventListener("input", () => {
+      query = input.value.trim().toLowerCase();
+      apply();
+    });
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const type = chip.dataset.filterType;
+        const value = chip.dataset.filterValue || "";
+
+        if (type === "all") {
+          activeBrand = "";
+          activeGender = "";
+          chips.forEach((c) => c.classList.remove("is-active"));
+          chip.classList.add("is-active");
+        } else {
+          // Alterna el filtro de su grupo (marca o género) de forma independiente.
+          const sameGroup = chips.filter((c) => c.dataset.filterType === type);
+          const wasActive = chip.classList.contains("is-active");
+          sameGroup.forEach((c) => c.classList.remove("is-active"));
+          if (type === "brand") activeBrand = wasActive ? "" : value;
+          if (type === "gender") activeGender = wasActive ? "" : value;
+          if (!wasActive) chip.classList.add("is-active");
+
+          const allChip = chips.find((c) => c.dataset.filterType === "all");
+          if (allChip) allChip.classList.toggle("is-active", !activeBrand && !activeGender);
+        }
+        apply();
+      });
+    });
+
+    root.querySelector<HTMLButtonElement>("[data-clear]")?.addEventListener("click", () => {
+      query = "";
+      activeBrand = "";
+      activeGender = "";
+      if (input) input.value = "";
+      chips.forEach((c) => c.classList.remove("is-active"));
+      chips.find((c) => c.dataset.filterType === "all")?.classList.add("is-active");
+      apply();
+    });
+
+    apply();
+  }
+
+  initCatalog();
+</script>
+
+<style>
+  .cat-hero {
+    padding: 2.5rem 0 1.5rem;
+    background: var(--hero-bg);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .cat-hero__back {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .cat-hero__back:hover {
+    color: var(--primary);
+  }
+  .cat-hero__eyebrow {
+    margin: 0 0 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+  .cat-hero__title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .cat-hero__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 14px;
+    background: var(--primary-soft);
+    border: 1px solid var(--card-border);
+    color: var(--primary);
+  }
+  .cat-hero__lead {
+    margin: 0.75rem 0 0;
+    max-width: 40rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+  }
+
+  .cat-results {
+    padding-top: 2rem;
+  }
+  .cat-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .cat-search {
+    position: relative;
+    width: 100%;
+  }
+  .cat-search__icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  .cat-search__input {
+    width: 100%;
+    padding: 0.95rem 1rem 0.95rem 2.85rem;
+    font-size: 1rem;
+    color: var(--text);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cat-search__input::placeholder {
+    color: var(--text-muted);
+  }
+  .cat-search__input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  }
+  .cat-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .cat-chip {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .cat-chip:hover {
+    border-color: var(--primary);
+    color: var(--text);
+  }
+  .cat-chip.is-active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .cat-count {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  @media (min-width: 720px) {
+    .cat-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .cat-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .cat-empty,
+  .cat-noresults {
+    margin-top: 2rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border: 2px dashed var(--card-border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+  }
+  .cat-empty p,
+  .cat-noresults p {
+    margin: 0 0 1.25rem;
+  }
+</style>

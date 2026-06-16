@@ -2,22 +2,25 @@
 import { features } from "../data/store";
 
 const icons: Record<string, string> = {
-  shoe: "👟",
-  shirt: "👕",
-  quality: "✓",
-  style: "🛍️",
-  bag: "👜",
-  home: "🏠",
+  shoe: `<path d="M2 17h20M3 17v-2.2c0-.7.5-1.3 1.2-1.5l4.6-1.3a3 3 0 0 0 1.4-.9l2.1-2.4c.4-.5 1.1-.6 1.6-.2l.9.7c.4.3.6.8.5 1.3l-.3 1.4 4.6 1.6c.8.3 1.4 1 1.4 1.9V17"/>`,
+  search: `<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/>`,
+  truck: `<path d="M3 6h11v9H3zM14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/>`,
+  chat: `<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z" stroke-linejoin="round"/>`,
 };
 ---
 
-<section class="sus-features" aria-label="Ventajas">
+<section class="sus-features" aria-label="Por qué comprar aquí">
   <div class="sus-container">
     <ul class="sus-features__list">
       {features.map((f) => (
-        <li>
-          <span class="sus-features__icon" aria-hidden="true">{icons[f.icon] ?? "★"}</span>
-          <span class="sus-features__label">{f.label}</span>
+        <li class="sus-features__card">
+          <span class="sus-features__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" set:html={icons[f.icon] ?? ""} />
+          </span>
+          <div>
+            <p class="sus-features__title">{f.title}</p>
+            <p class="sus-features__desc">{f.desc}</p>
+          </div>
         </li>
       ))}
     </ul>
@@ -26,47 +29,62 @@ const icons: Record<string, string> = {
 
 <style>
   .sus-features {
-    padding: 1.5rem 0 2rem;
+    padding: 2.5rem 0;
+    background: var(--bg-muted);
     border-bottom: 1px solid var(--card-border);
   }
   .sus-features__list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .sus-features__list li {
+  .sus-features__card {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    border: 2px solid var(--card-border);
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--card-border);
     border-radius: var(--radius);
     background: var(--card-bg);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .sus-features__card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
   }
   .sus-features__icon {
     display: grid;
     place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 50%;
-    border: 2px solid var(--primary);
-    font-size: 1.1rem;
-    font-weight: 800;
+    flex-shrink: 0;
+    width: 2.85rem;
+    height: 2.85rem;
+    border-radius: 12px;
+    background: var(--primary-soft);
+    border: 1px solid var(--card-border);
     color: var(--primary);
   }
-  .sus-features__label {
-    font-size: 0.82rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+  .sus-features__title {
+    margin: 0 0 0.2rem;
+    font-size: 0.98rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    color: var(--text);
+  }
+  .sus-features__desc {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.4;
     color: var(--text-muted);
   }
-  @media (min-width: 720px) {
+  @media (min-width: 560px) {
+    .sus-features__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 980px) {
     .sus-features__list {
       grid-template-columns: repeat(4, 1fr);
     }

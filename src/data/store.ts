@@ -10,17 +10,38 @@ export const store = {
   whatsappCountry: "57",
   whatsappNumber: "3043510104",
   whatsappDisplay: "304 351 0104",
-  facebookUrl: "",
-  facebookLabel: "Facebook",
+  instagramUrl: "https://www.instagram.com/stepupstore",
+  instagramHandle: "@stepupstore",
   shippingNote: "Envíos a todo el país",
   ctaOnline: "Compra online",
 } as const;
 
+export const developer = {
+  name: "ZapataMejia",
+  url: "https://github.com/ZapataMejia",
+} as const;
+
 export const features = [
-  { icon: "shoe", label: "Tenis top marcas" },
-  { icon: "shirt", label: "Ropa urbana" },
-  { icon: "quality", label: "Calidad garantizada" },
-  { icon: "style", label: "Estilo que te representa" },
+  {
+    icon: "shoe",
+    title: "Marcas que sí reconoces",
+    desc: "Nike, Adidas, Jordan, New Balance y más, seleccionados a mano.",
+  },
+  {
+    icon: "search",
+    title: "Catálogo directo en la página",
+    desc: "Explora, busca por marca o color y elige sin pasar por nadie.",
+  },
+  {
+    icon: "truck",
+    title: "Envíos a todo el país",
+    desc: "Coordinamos tu envío seguro a cualquier ciudad de Colombia.",
+  },
+  {
+    icon: "chat",
+    title: "Pides por WhatsApp",
+    desc: "Un clic en el producto y listo: nosotros confirmamos talla y pago.",
+  },
 ] as const;
 
 export const trustBadges = [
@@ -110,7 +131,7 @@ export const paymentMethods = [
 ] as const;
 
 export const howToBuy = [
-  "Escríbenos por WhatsApp con el producto o foto del catálogo.",
-  "Te confirmamos talla, color, precio y formas de pago.",
-  "Coordinamos envío a todo el país.",
+  "Explora el catálogo y entra a la categoría que buscas.",
+  "Cuando veas lo que te gusta, toca “Lo quiero” y se abre WhatsApp con el producto listo.",
+  "Confirmamos talla, color y pago, y coordinamos el envío a todo el país.",
 ] as const;
