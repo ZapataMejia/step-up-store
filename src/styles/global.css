@@ -144,8 +144,8 @@ a {
 
 .sus-btn--outline-light {
   background: transparent;
-  border-color: #fff;
-  color: #fff;
+  border-color: currentColor;
+  color: var(--hero-text);
 }
 
 .sus-btn--dark {

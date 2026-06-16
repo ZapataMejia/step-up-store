@@ -20,6 +20,16 @@ const fonts =
 <html lang="es-CO" class={`theme-${theme}`}>
   <head>
     <meta charset="UTF-8" />
+    <script is:inline>
+      (function () {
+        try {
+          var m = localStorage.getItem("sus-mode");
+          document.documentElement.dataset.mode = m === "light" ? "light" : "dark";
+        } catch (e) {
+          document.documentElement.dataset.mode = "dark";
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#1d4ed8" />

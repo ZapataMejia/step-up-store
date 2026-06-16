@@ -1,59 +1,67 @@
 ---
-import { catalogLinks } from "../data/store";
-import { whatsappUrl, defaultOrderMessage } from "../lib/whatsapp";
+import ProductCard from "./ProductCard.astro";
+import { products } from "../data/products";
 
-const wa = whatsappUrl(defaultOrderMessage);
-const hasLinks = catalogLinks.length > 0;
+const featured = products.filter((p) => p.featured && !p.soldOut).slice(0, 4);
+const productUrlFor = (slug: string, id: string) =>
+  new URL(`/categoria/${slug}#${id}`, Astro.site).toString();
 ---
 
-<section class="sus-section" id="catalogos">
-  <div class="sus-container">
-    <p class="sus-section__eyebrow">Catálogos</p>
-    <h2 class="sus-section__title">Mira lo disponible</h2>
+{featured.length > 0 && (
+  <section class="sus-section" id="catalogos">
+    <div class="sus-container">
+      <div class="sus-featured__head">
+        <div>
+          <p class="sus-section__eyebrow">Destacados</p>
+          <h2 class="sus-section__title">Lo más pedido</h2>
+        </div>
+        <a class="sus-featured__all" href="/#categorias">Ver todo el catálogo →</a>
+      </div>
 
-    {hasLinks ? (
-      <ul class="sus-catalogs">
-        {catalogLinks.map((c) => (
-          <li>
-            <a class="sus-btn sus-btn--primary" href={c.href} target="_blank" rel="noopener noreferrer">
-              {c.label}
-            </a>
-          </li>
+      <ul class="sus-featured__grid">
+        {featured.map((product) => (
+          <ProductCard product={product} productUrl={productUrlFor(product.category, product.id)} />
         ))}
       </ul>
-    ) : (
-      <div class="sus-catalogs__pending">
-        <p class="sus-section__lead">
-          Los enlaces a los catálogos digitales se publicarán aquí en cuanto nos los compartan. Mientras
-          tanto, pide por WhatsApp con foto del catálogo impreso o describe lo que buscas.
-        </p>
-        <a class="sus-btn sus-btn--outline" href={wa} target="_blank" rel="noopener noreferrer">
-          Pedir por WhatsApp
-        </a>
-      </div>
-    )}
-  </div>
-</section>
+    </div>
+  </section>
+)}
 
 <style>
-  .sus-catalogs {
+  .sus-featured__head {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 1.5rem 0 0;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .sus-featured__all {
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+  .sus-featured__all:hover {
+    text-decoration: underline;
+  }
+  .sus-featured__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
-
-  .sus-catalogs__pending {
-    margin-top: 1rem;
-    padding: 1.5rem;
-    border: 2px dashed var(--gray-200);
-    border-radius: var(--radius);
-    background: var(--gray-50);
+  @media (min-width: 720px) {
+    .sus-featured__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
-
-  .sus-catalogs__pending .sus-section__lead {
-    margin-bottom: 1.25rem;
+  @media (min-width: 1000px) {
+    .sus-featured__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 </style>

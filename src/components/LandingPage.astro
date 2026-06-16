@@ -16,6 +16,7 @@ import PaymentMethods from "./PaymentMethods.astro";
 import CtaBand from "./CtaBand.astro";
 import SiteFooter from "./SiteFooter.astro";
 import WhatsAppFloat from "./WhatsAppFloat.astro";
+import ProductModal from "./ProductModal.astro";
 import { store } from "../data/store";
 
 interface Props {
@@ -64,6 +65,7 @@ const themeNames: Record<ThemeId, string> = {
   <PaymentMethods />
   <CtaBand />
 </main>
+<ProductModal />
 <SiteFooter />
 <WhatsAppFloat />
 

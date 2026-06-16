@@ -20,25 +20,23 @@ html.theme-v2 {
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-html.theme-v2 .sus-features {
-  background: #141414;
-  border-top: 1px solid #27272a;
-}
-
-html.theme-v2 .sus-features__list li {
-  background: #18181b;
-  border-color: #3f3f46;
-}
-
-html.theme-v2 .sus-features__label {
-  color: #e4e4e7;
-}
-
-html.theme-v2 .sus-trust {
-  background: #18181b;
-  border-color: #27272a;
-}
-
-html.theme-v2 .sus-trust__list li {
-  color: #d4d4d8;
+/* ——— Modo claro para el tema en producción (v2) ——— */
+html.theme-v2[data-mode="light"] {
+  --primary: #1d4ed8;
+  --primary-dark: #1e3a8a;
+  --primary-soft: #eff6ff;
+  --bg: #ffffff;
+  --bg-muted: #f4f6fb;
+  --text: #0a0a0a;
+  --text-muted: #475569;
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --header-text: #0a0a0a;
+  --header-border: #e2e8f0;
+  --hero-bg: linear-gradient(135deg, #ffffff 55%, #eff6ff 100%);
+  --hero-text: #0a0a0a;
+  --hero-muted: #475569;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
+  /* El footer se mantiene oscuro en ambos modos para contraste de marca. */
 }

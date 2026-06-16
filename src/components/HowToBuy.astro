@@ -1,8 +1,5 @@
 ---
 import { howToBuy } from "../data/store";
-import { whatsappUrl, defaultOrderMessage } from "../lib/whatsapp";
-
-const wa = whatsappUrl(defaultOrderMessage);
 ---
 
 <section class="sus-section" id="como-comprar">
@@ -11,7 +8,7 @@ const wa = whatsappUrl(defaultOrderMessage);
       <p class="sus-section__eyebrow">Ventas digitales</p>
       <h2 class="sus-section__title">Cómo comprar</h2>
       <p class="sus-section__lead">
-        Sin carrito complicado: pedidos directos por WhatsApp, como ya lo hacen con el catálogo.
+        Sin carrito ni pasos complicados: explora el catálogo en la página y pide directo por WhatsApp.
       </p>
       <ol class="sus-how__steps">
         {howToBuy.map((step, i) => (
@@ -21,11 +18,11 @@ const wa = whatsappUrl(defaultOrderMessage);
           </li>
         ))}
       </ol>
-      <a class="sus-btn sus-btn--primary" href={wa} target="_blank" rel="noopener noreferrer">Abrir WhatsApp</a>
+      <a class="sus-btn sus-btn--primary" href="/#categorias">Explorar catálogo</a>
     </div>
     <aside class="sus-how__aside">
-      <p class="sus-how__aside-title">¿Tienes el catálogo en PDF o fotos?</p>
-      <p>Envíanos captura o código del producto y te respondemos con disponibilidad y precio.</p>
+      <p class="sus-how__aside-title">¿No encuentras lo que buscas?</p>
+      <p>Escríbenos el modelo, marca o referencia y te confirmamos disponibilidad y precio al instante.</p>
     </aside>
   </div>
 </section>

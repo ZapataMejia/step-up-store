@@ -2,29 +2,26 @@
 import Logo from "./Logo.astro";
 import type { ThemeId } from "../data/themes";
 import { store } from "../data/store";
-import { whatsappUrl, defaultOrderMessage } from "../lib/whatsapp";
 
 interface Props {
   themeId?: ThemeId;
 }
 
 const { themeId = "v1" } = Astro.props;
-const wa = whatsappUrl(defaultOrderMessage);
-const logoLight = themeId === "v2" || themeId === "v3";
 
 const links = [
-  { href: "#categorias", label: "Categorías" },
-  { href: "#catalogos", label: "Catálogos" },
-  { href: "#marcas", label: "Marcas" },
-  { href: "#como-comprar", label: "Cómo comprar" },
-  { href: "#pagos", label: "Pagos" },
+  { href: "/#categorias", label: "Categorías" },
+  { href: "/#catalogos", label: "Destacados" },
+  { href: "/#marcas", label: "Marcas" },
+  { href: "/#como-comprar", label: "Cómo comprar" },
+  { href: "/#pagos", label: "Pagos" },
 ];
 ---
 
 <header class="sus-header">
   <div class="sus-container sus-header__inner">
-    <a class="sus-header__brand" href="#inicio" aria-label={`${store.name} ${store.nameAccent} — inicio`}>
-      <Logo size="sm" variant={logoLight ? "light" : "default"} />
+    <a class="sus-header__brand" href="/" aria-label={`${store.name} ${store.nameAccent} — inicio`}>
+      <Logo size="sm" />
       <span class="sus-header__wordmark">
         <span class="sus-header__name">{store.name}</span>
         <span class="sus-header__accent">{store.nameAccent}</span>
@@ -35,11 +32,42 @@ const links = [
         <a href={l.href}>{l.label}</a>
       ))}
     </nav>
-    <a class="sus-btn sus-btn--primary sus-header__cta" href={wa} target="_blank" rel="noopener noreferrer">
-      Pedir por WhatsApp
-    </a>
+    <div class="sus-header__actions">
+      <button
+        type="button"
+        class="sus-mode-toggle"
+        data-mode-toggle
+        aria-label="Cambiar entre modo claro y oscuro"
+        title="Cambiar modo claro / oscuro"
+      >
+        <svg class="sus-mode-toggle__sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="sus-mode-toggle__moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+      <a class="sus-btn sus-btn--primary sus-header__cta" href="/#categorias">
+        Ver catálogo
+      </a>
+    </div>
   </div>
 </header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("[data-mode-toggle]");
+  toggle?.addEventListener("click", () => {
+    const current = document.documentElement.dataset.mode === "light" ? "light" : "dark";
+    const next = current === "light" ? "dark" : "light";
+    document.documentElement.dataset.mode = next;
+    try {
+      localStorage.setItem("sus-mode", next);
+    } catch {
+      /* noop */
+    }
+  });
+</script>
 
 <style>
   .sus-header {
@@ -99,6 +127,41 @@ const links = [
   html.theme-v2 .sus-header__nav a,
   html.theme-v3 .sus-header__nav a {
     color: var(--hero-muted);
+  }
+  .sus-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .sus-mode-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    border: 1px solid var(--header-border);
+    background: transparent;
+    color: var(--header-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .sus-mode-toggle:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
+  /* Muestra el ícono según el modo actual: en oscuro ofrece pasar a claro (sol). */
+  .sus-mode-toggle__sun {
+    display: block;
+  }
+  .sus-mode-toggle__moon {
+    display: none;
+  }
+  html[data-mode="light"] .sus-mode-toggle__sun {
+    display: none;
+  }
+  html[data-mode="light"] .sus-mode-toggle__moon {
+    display: block;
   }
   .sus-header__cta {
     font-size: 0.82rem;
