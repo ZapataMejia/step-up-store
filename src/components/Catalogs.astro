@@ -48,7 +48,7 @@ const productUrlFor = (slug: string, id: string) =>
   }
   .sus-featured__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     margin: 0;
     padding: 0;
@@ -56,12 +56,12 @@ const productUrlFor = (slug: string, id: string) =>
   }
   @media (min-width: 720px) {
     .sus-featured__grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   @media (min-width: 1000px) {
     .sus-featured__grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 </style>

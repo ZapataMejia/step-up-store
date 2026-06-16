@@ -24,13 +24,13 @@ export const developer = {
 export const features = [
   {
     icon: "shoe",
-    title: "Marcas que sí reconoces",
-    desc: "Nike, Adidas, Jordan, New Balance y más, seleccionados a mano.",
+    title: "Las marcas que buscas",
+    desc: "Nike, Adidas, Jordan, New Balance y más, siempre disponibles.",
   },
   {
     icon: "search",
-    title: "Catálogo directo en la página",
-    desc: "Explora, busca por marca o color y elige sin pasar por nadie.",
+    title: "Todo el catálogo en un lugar",
+    desc: "Explora por categoría, marca o color y encuentra lo tuyo en segundos.",
   },
   {
     icon: "truck",

@@ -332,7 +332,7 @@ const productUrlFor = (id: string) =>
   }
   .cat-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     margin: 0.5rem 0 0;
     padding: 0;
@@ -340,12 +340,12 @@ const productUrlFor = (id: string) =>
   }
   @media (min-width: 720px) {
     .cat-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   @media (min-width: 1000px) {
     .cat-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   .cat-empty,
