@@ -42,4 +42,4 @@ Edita `src/data/store.ts`:
 
 ## WhatsApp
 
-Número configurado: **304 351 0104** (Colombia +57).
+Número configurado: **302 213 5461** (Colombia +57).

@@ -8,10 +8,10 @@ export const store = {
   heroExtended:
     "Ropa, tenis, deportivo, accesorios, hogar y más — todo para tu imagen y tu día a día.",
   whatsappCountry: "57",
-  whatsappNumber: "3043510104",
-  whatsappDisplay: "304 351 0104",
-  instagramUrl: "https://www.instagram.com/stepupstore",
-  instagramHandle: "@stepupstore",
+  whatsappNumber: "3022135461",
+  whatsappDisplay: "302 213 5461",
+  instagramUrl: "https://www.instagram.com/stepupstore.oficial",
+  instagramHandle: "@stepupstore.oficial",
   shippingNote: "Envíos a todo el país",
   ctaOnline: "Compra online",
 } as const;
