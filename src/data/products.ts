@@ -2983,6 +2983,96 @@ export const products: Product[] = [
     description: "Polo Hermès gama alta en tela fría, calidad 1.1. Cuello con franjas en contraste y escudo bordado. Tallas M a 2XL.",
     tags: ["polo", "camiseta", "hermes", "hermès", "tela fria", "tela fría", "gama alta", "hombre"],
   },
+
+  // ── ROPA — Conjunto chaleco + pantalón (dama, talla única) — $75.000 ───────
+  {
+    id: "conjunto-chaleco-dama",
+    name: "Conjunto Chaleco + Pantalón",
+    category: "ropa",
+    gender: "Mujer",
+    reference: "3633-M17",
+    price: 75000,
+    images: [
+      "/images/products/ropa/conjunto-chaleco-negro.png",
+      "/images/products/ropa/conjunto-chaleco-azul-oscuro.png",
+      "/images/products/ropa/conjunto-chaleco-gris.png",
+      "/images/products/ropa/conjunto-chaleco-rosa.png",
+      "/images/products/ropa/conjunto-chaleco-camel.png",
+      "/images/products/ropa/conjunto-chaleco-colores.png",
+    ],
+    colors: [
+      { name: "Negro", hex: "#1a1a1a", img: "/images/products/ropa/conjunto-chaleco-negro.png" },
+      { name: "Azul Oscuro", hex: "#1f2a44", img: "/images/products/ropa/conjunto-chaleco-azul-oscuro.png" },
+      { name: "Gris", hex: "#bdbdbd", img: "/images/products/ropa/conjunto-chaleco-gris.png" },
+      { name: "Rosa", hex: "#d39aa6", img: "/images/products/ropa/conjunto-chaleco-rosa.png" },
+      { name: "Camel", hex: "#b3895c", img: "/images/products/ropa/conjunto-chaleco-camel.png" },
+      { name: "Crema", hex: "#e8ded0", img: "/images/products/ropa/conjunto-chaleco-colores.png" },
+    ],
+    sizes: ["Única"],
+    description: "Conjunto de chaleco y pantalón en poliéster premium. Grueso, elegante y versátil para un look fino y cómodo. Talla única. Varios colores disponibles (negro, azul oscuro, gris, rosa, camel y crema).",
+    tags: ["conjunto", "chaleco", "pantalon", "pantalón", "dama", "mujer", "elegante", "formal", "poliester", "poliéster"],
+    featured: true,
+  },
+
+  // ── ROPA — Pijama short y blusa de tiras (dama, talla única) — $42.000 ─────
+  {
+    id: "pijama-short-blusa-tiras",
+    name: "Pijama Short y Blusa de Tiras",
+    category: "ropa",
+    gender: "Mujer",
+    reference: "PIJ-RIB-TIRAS",
+    price: 42000,
+    images: [
+      "/images/products/ropa/pijama-tiras-cerezas-blanco.png",
+      "/images/products/ropa/pijama-tiras-corazones-azul.png",
+      "/images/products/ropa/pijama-tiras-amapolas-rosado.png",
+      "/images/products/ropa/pijama-tiras-flores-lila.png",
+      "/images/products/ropa/pijama-tiras-fresas-crema.png",
+      "/images/products/ropa/pijama-tiras-monos.png",
+    ],
+    colors: [
+      { name: "Cerezas Blanco", hex: "#f4eeee", img: "/images/products/ropa/pijama-tiras-cerezas-blanco.png" },
+      { name: "Corazones Azul", hex: "#3b6fd1", img: "/images/products/ropa/pijama-tiras-corazones-azul.png" },
+      { name: "Amapolas Rosado", hex: "#f0b9c3", img: "/images/products/ropa/pijama-tiras-amapolas-rosado.png" },
+      { name: "Flores Lila", hex: "#c9b6e8", img: "/images/products/ropa/pijama-tiras-flores-lila.png" },
+      { name: "Fresas Crema", hex: "#f3ead9", img: "/images/products/ropa/pijama-tiras-fresas-crema.png" },
+      { name: "Moños", hex: "#f2e6e6", img: "/images/products/ropa/pijama-tiras-monos.png" },
+    ],
+    sizes: ["Única"],
+    description: "Pijama de short y blusa de tiras en tela rib. Suave, licrada y cómoda, con bordes en contraste y detalles hermosos. Talla única. Varios estampados disponibles.",
+    tags: ["pijama", "short", "blusa", "tiras", "rib", "dama", "mujer", "dormir", "descanso"],
+    featured: true,
+  },
+
+  // ── ROPA — Jeans Most Wanted (dama, tallas 5-13) — $110.000 ────────────────
+  {
+    id: "jeans-most-wanted-dama",
+    name: "Jeans Most Wanted Dama",
+    brand: "Most Wanted",
+    category: "ropa",
+    gender: "Mujer",
+    reference: "JEANS-MW",
+    price: 110000,
+    images: [
+      "/images/products/ropa/jeans-most-wanted-azul-clasico.png",
+      "/images/products/ropa/jeans-most-wanted-azul-claro.png",
+      "/images/products/ropa/jeans-most-wanted-azul-medio.png",
+      "/images/products/ropa/jeans-most-wanted-azul-oscuro.png",
+      "/images/products/ropa/jeans-most-wanted-negro.png",
+    ],
+    colors: [
+      { name: "Azul Clásico", hex: "#5a7aa6", img: "/images/products/ropa/jeans-most-wanted-azul-clasico.png" },
+      { name: "Azul Claro", hex: "#a9c4e0", img: "/images/products/ropa/jeans-most-wanted-azul-claro.png" },
+      { name: "Azul Medio", hex: "#476694", img: "/images/products/ropa/jeans-most-wanted-azul-medio.png" },
+      { name: "Azul Oscuro", hex: "#2c3e5e", img: "/images/products/ropa/jeans-most-wanted-azul-oscuro.png" },
+      { name: "Negro", hex: "#161616", img: "/images/products/ropa/jeans-most-wanted-negro.png" },
+    ],
+    sizes: ["5", "7", "9", "11", "13"],
+    description: "Jeans Most Wanted para dama en tela premium con horma levanta cola. Tallas 5, 7, 9, 11 y 13. Disponible en varios tonos de azul y negro.",
+    tags: ["jeans", "pantalon", "pantalón", "most wanted", "dama", "mujer", "denim", "levanta cola", "tela premium"],
+    featured: true,
+  },
+
   // ── LOCIONES (calidad 1.1) — $85.000 ───────────────────────────────────────
   // ── Mujer ──
   {
