@@ -20,12 +20,16 @@ const waPrice = onPromo
 const firstColor = product.colors?.[0]?.name;
 const hasPhoto = Boolean(product.images?.[0]) && product.images[0] !== PLACEHOLDER;
 const ptype = productType(product) ?? "";
+// Precio efectivo (numérico) y enlace directo a la foto para el mensaje.
+const priceValue = onPromo ? (product.promoPrice as number) : product.price;
+const imageUrl = hasPhoto ? new URL(product.images[0], Astro.site).href : undefined;
 
 const href = productWhatsappUrl({
   name: product.name,
   reference: product.reference,
   price: waPrice,
   color: firstColor,
+  image: imageUrl,
   url: productUrl,
 });
 
@@ -49,6 +53,7 @@ const detail = {
   brand: product.brand ?? "",
   reference: product.reference ?? "",
   price: priceLabel,
+  priceValue,
   oldPrice: oldPriceLabel,
   discount,
   description: product.description ?? "",
@@ -134,18 +139,28 @@ const detail = {
           <span class="sus-prod__price">{priceLabel}</span>
           {onPromo && <span class="sus-prod__price-old">{oldPriceLabel}</span>}
         </span>
-        <a
-          class="sus-prod__cta"
-          href={href}
-          data-wa-cta
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"></path>
-          </svg>
-          Lo quiero
-        </a>
+        <div class="sus-prod__actions">
+          <button type="button" class="sus-prod__add" data-add-cart aria-label={`Agregar ${product.name} al carrito`}>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="9" cy="20" r="1.3"></circle>
+              <circle cx="18" cy="20" r="1.3"></circle>
+              <path d="M2 3h3l2.4 12.1a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.2L22 7H6"></path>
+            </svg>
+            Agregar
+          </button>
+          <a
+            class="sus-prod__cta"
+            href={href}
+            data-wa-cta
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"></path>
+            </svg>
+            Lo quiero
+          </a>
+        </div>
       </div>
     </div>
   </article>
@@ -160,6 +175,37 @@ const detail = {
     );
     const cta = card.querySelector<HTMLAnchorElement>("[data-wa-cta]");
     const img = card.querySelector<HTMLImageElement>(".sus-prod__media img");
+
+    // Agregar al carrito con el color activo y la foto que se está mostrando.
+    const addBtn = card.querySelector<HTMLButtonElement>("[data-add-cart]");
+    addBtn?.addEventListener("click", () => {
+      let d: any = {};
+      try {
+        d = JSON.parse(card.dataset.product || "{}");
+      } catch {
+        /* noop */
+      }
+      const activeSwatch = card.querySelector<HTMLElement>(".sus-prod__swatch.is-active");
+      const activeColor = activeSwatch?.dataset.color || d.colors?.[0]?.name || "";
+      // Guardamos la ruta relativa (p. ej. /images/...) para que el thumbnail
+      // cargue en cualquier origen/puerto; la URL absoluta se arma al pedir.
+      const relImage = activeSwatch?.dataset.img || d.images?.[0] || "";
+      document.dispatchEvent(
+        new CustomEvent("sus:add-to-cart", {
+          detail: {
+            id: d.id,
+            name: d.name,
+            reference: d.reference,
+            price: d.price,
+            priceValue: d.priceValue,
+            color: activeColor,
+            size: "",
+            image: relImage,
+          },
+        })
+      );
+    });
+
     swatches.forEach((sw) => {
       sw.addEventListener("click", () => {
         swatches.forEach((s) => s.classList.remove("is-active"));
@@ -402,6 +448,32 @@ const detail = {
     text-decoration: line-through;
     text-decoration-color: #e11d48;
   }
+  .sus-prod__actions {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  .sus-prod__add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1.5px solid var(--card-border);
+    font-weight: 700;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+  }
+  .sus-prod__add:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
   .sus-prod__cta {
     display: inline-flex;
     align-items: center;
@@ -415,13 +487,14 @@ const detail = {
     font-size: 0.85rem;
     text-decoration: none;
     white-space: nowrap;
+    flex: 1;
     transition: transform 0.12s ease, filter 0.12s ease;
   }
   .sus-prod__cta:hover {
     transform: translateY(-1px);
     filter: brightness(1.05);
   }
-  /* En tarjetas anchas (desktop) precio y botón vuelven a una sola fila. */
+  /* En tarjetas anchas (desktop) precio y botones vuelven a una sola fila. */
   @media (min-width: 1100px) {
     .sus-prod__footer {
       flex-direction: row;

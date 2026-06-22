@@ -17,12 +17,15 @@ export interface ProductMessageInput {
   price?: string;
   color?: string;
   size?: string;
+  /** Enlace directo a la foto del producto (para identificarlo de inmediato). */
+  image?: string;
   url?: string;
 }
 
 /**
  * Arma el mensaje pre-cargado de WhatsApp para un producto puntual, de modo que
- * quien recibe el chat sepa exactamente qué producto le interesa al cliente.
+ * quien recibe el chat sepa exactamente qué producto le interesa al cliente
+ * (incluye el enlace a la foto para identificarlo sin abrir toda la página).
  */
 export function productMessage(p: ProductMessageInput): string {
   const lines: string[] = [
@@ -34,7 +37,8 @@ export function productMessage(p: ProductMessageInput): string {
   if (p.color) lines.push(`• Color: ${p.color}`);
   if (p.size) lines.push(`• Talla: ${p.size}`);
   if (p.price) lines.push(`• Precio: ${p.price}`);
-  if (p.url) lines.push("", p.url);
+  if (p.image) lines.push(`• Foto: ${p.image}`);
+  else if (p.url) lines.push("", p.url);
   lines.push("", "¿Está disponible?");
   return lines.join("\n");
 }

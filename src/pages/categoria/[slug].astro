@@ -5,6 +5,7 @@ import SiteFooter from "../../components/SiteFooter.astro";
 import WhatsAppFloat from "../../components/WhatsAppFloat.astro";
 import ProductCard from "../../components/ProductCard.astro";
 import ProductModal from "../../components/ProductModal.astro";
+import Cart from "../../components/Cart.astro";
 import CategoryIcon from "../../components/CategoryIcon.astro";
 import {
   categoryList,
@@ -129,6 +130,7 @@ const productUrlFor = (id: string) =>
     </section>
   </main>
   <ProductModal />
+  <Cart />
   <SiteFooter />
   <WhatsAppFloat />
 </VariantLayout>

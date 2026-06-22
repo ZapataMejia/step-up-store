@@ -81,6 +81,14 @@
           </svg>
           Lo quiero por WhatsApp
         </a>
+        <button type="button" class="pm__add" data-pm-add>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="20" r="1.3"></circle>
+            <circle cx="18" cy="20" r="1.3"></circle>
+            <path d="M2 3h3l2.4 12.1a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.2L22 7H6"></path>
+          </svg>
+          Agregar al carrito
+        </button>
         <p class="pm__note">Coordinamos tu pedido y envío directamente por WhatsApp.</p>
       </div>
     </div>
@@ -113,6 +121,7 @@
     const sizesBlock = q<HTMLElement>("[data-pm-sizes-block]")!;
     const sizesEl = q<HTMLElement>("[data-pm-sizes]")!;
     const cta = q<HTMLAnchorElement>("[data-pm-cta]")!;
+    const addBtn = q<HTMLButtonElement>("[data-pm-add]")!;
     const prevBtn = q<HTMLButtonElement>("[data-pm-prev]")!;
     const nextBtn = q<HTMLButtonElement>("[data-pm-next]")!;
 
@@ -124,7 +133,7 @@
     type Color = { name: string; hex: string; img: string };
     type Detail = {
       id: string; name: string; brand: string; reference: string; price: string;
-      oldPrice?: string; discount?: number;
+      priceValue?: number; oldPrice?: string; discount?: number;
       description: string; gender: string; sizes: string[]; colors: Color[];
       images: string[]; url: string; soldOut: boolean;
     };
@@ -145,7 +154,9 @@
           : `• Precio: ${d.price}`;
         lines.push(priceLine);
       }
-      if (d.url) lines.push("", d.url);
+      const photo = !imgEl.hidden ? imgEl.src : "";
+      if (photo) lines.push(`• Foto: ${photo}`);
+      else if (d.url) lines.push("", d.url);
       lines.push("", "¿Está disponible?");
       return lines.join("\n");
     }
@@ -396,6 +407,34 @@
 
       open(parsed.detail, parsed.base);
       updateNav();
+    });
+
+    // Agregar al carrito el producto actual con su color, talla y foto.
+    addBtn.addEventListener("click", () => {
+      if (!current) return;
+      // Ruta relativa de la foto actual para el carrito (robusta entre orígenes).
+      let relImage = "";
+      if (!imgEl.hidden && imgEl.src) {
+        try {
+          relImage = new URL(imgEl.src).pathname;
+        } catch {
+          relImage = imgEl.src;
+        }
+      }
+      document.dispatchEvent(
+        new CustomEvent("sus:add-to-cart", {
+          detail: {
+            id: current.id,
+            name: current.name,
+            reference: current.reference,
+            price: current.price,
+            priceValue: current.priceValue,
+            color: currentColor,
+            size: currentSize,
+            image: relImage,
+          },
+        })
+      );
     });
 
     prevBtn.addEventListener("click", (e) => {
@@ -834,6 +873,27 @@
   .pm__cta:hover {
     transform: translateY(-1px);
     filter: brightness(1.05);
+  }
+  .pm__add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    background: var(--card-bg, #fff);
+    color: var(--text, #111);
+    border: 1.5px solid var(--card-border, #e5e7eb);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.12s ease, color 0.12s ease, transform 0.12s ease;
+  }
+  .pm__add:hover {
+    border-color: var(--primary, #2563eb);
+    color: var(--primary, #2563eb);
+    transform: translateY(-1px);
   }
   .pm__note {
     margin: 0;

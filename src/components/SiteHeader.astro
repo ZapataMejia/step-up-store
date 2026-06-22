@@ -36,6 +36,21 @@ const links = [
     <div class="sus-header__actions">
       <button
         type="button"
+        class="sus-cart-btn"
+        data-cart-open
+        data-cart-btn
+        aria-label="Abrir carrito"
+        title="Tu carrito"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="9" cy="20" r="1.4"></circle>
+          <circle cx="18" cy="20" r="1.4"></circle>
+          <path d="M2 3h3l2.4 12.1a1.5 1.5 0 0 0 1.5 1.2h8.4a1.5 1.5 0 0 0 1.5-1.2L22 7H6"></path>
+        </svg>
+        <span class="sus-cart-btn__count" data-cart-count hidden>0</span>
+      </button>
+      <button
+        type="button"
         class="sus-mode-toggle"
         data-mode-toggle
         aria-label="Cambiar entre modo claro y oscuro"
@@ -133,6 +148,51 @@ const links = [
     display: flex;
     align-items: center;
     gap: 0.6rem;
+  }
+  .sus-cart-btn {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    border: 1px solid var(--header-border);
+    background: transparent;
+    color: var(--header-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .sus-cart-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
+  .sus-cart-btn.is-bump {
+    animation: sus-cart-bump 0.35s ease;
+  }
+  @keyframes sus-cart-bump {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.22); }
+    100% { transform: scale(1); }
+  }
+  .sus-cart-btn__count {
+    position: absolute;
+    top: -0.35rem;
+    right: -0.35rem;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    padding: 0 0.3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .sus-cart-btn__count[hidden] {
+    display: none;
   }
   .sus-mode-toggle {
     display: grid;
