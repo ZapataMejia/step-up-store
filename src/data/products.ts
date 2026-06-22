@@ -1482,6 +1482,81 @@ export const products: Product[] = [
     tags: ["camiseta", "oversize", "habitual", "grafiti", "urbana"],
   },
 
+  // ── ROPA — Camisetas oversize gramaje 350 (gama alta) — $90.000 ────────────
+  // Tallas: M · L · XL
+  {
+    id: "camiseta-oversize-undergold-369",
+    name: "Camiseta Oversize Undergold 369",
+    brand: "Undergold",
+    category: "ropa",
+    gender: "Hombre",
+    reference: "OVZ350-UG-369",
+    price: 90000,
+    images: ["/images/products/ropa/camiseta-oversize-undergold-369.png"],
+    colors: [
+      { name: "Blanco", hex: "#f2f2f2" },
+      { name: "Negro", hex: "#1a1a1a" },
+    ],
+    sizes: ["M", "L", "XL"],
+    description: "Camiseta oversize gama alta · gramaje 350 · full detalles. Estampado 'Undergold 369' al frente y 'Design Studio Association' en la espalda. Disponible en blanco y negro. Tallas M-L-XL.",
+    tags: ["camiseta", "oversize", "gramaje 350", "undergold", "369", "gama alta", "hombre"],
+    featured: true,
+  },
+  {
+    id: "camiseta-oversize-clemont-c",
+    name: "Camiseta Oversize Clemont",
+    brand: "Clemont",
+    category: "ropa",
+    gender: "Hombre",
+    reference: "OVZ350-CLEMONT",
+    price: 90000,
+    images: ["/images/products/ropa/camiseta-oversize-clemont-c.png"],
+    colors: [
+      { name: "Blanco", hex: "#f2f2f2" },
+      { name: "Negro", hex: "#1a1a1a" },
+    ],
+    sizes: ["M", "L", "XL"],
+    description: "Camiseta oversize gama alta · gramaje 350 · full detalles. Monograma 'C' gótico al frente y script 'Clemont' en la espalda con parche bordado. Disponible en blanco y negro. Tallas M-L-XL.",
+    tags: ["camiseta", "oversize", "gramaje 350", "clemont", "gotico", "gama alta", "hombre"],
+    featured: true,
+  },
+  {
+    id: "camiseta-oversize-undrgld-creative",
+    name: "Camiseta Oversize Undrgld Creative",
+    brand: "Undergold",
+    category: "ropa",
+    gender: "Hombre",
+    reference: "OVZ350-UG-CREATIVE",
+    price: 90000,
+    images: ["/images/products/ropa/camiseta-oversize-undrgld-creative.png"],
+    colors: [
+      { name: "Gris", hex: "#9aa3ad" },
+      { name: "Negro", hex: "#1a1a1a" },
+    ],
+    sizes: ["M", "L", "XL"],
+    description: "Camiseta oversize gama alta · gramaje 350 · full detalles. Estampado 'Undrgld.' al frente y 'Creative Corporation' en la espalda. Disponible en gris y negro. Tallas M-L-XL.",
+    tags: ["camiseta", "oversize", "gramaje 350", "undergold", "undrgld", "creative", "gama alta", "hombre"],
+    featured: true,
+  },
+  {
+    id: "camiseta-oversize-hellstar-paradise",
+    name: "Camiseta Oversize Hellstar Paradise",
+    brand: "Hellstar",
+    category: "ropa",
+    gender: "Hombre",
+    reference: "OVZ350-HELLSTAR",
+    price: 90000,
+    images: ["/images/products/ropa/camiseta-oversize-hellstar-paradise.png"],
+    colors: [
+      { name: "Negro", hex: "#1a1a1a" },
+      { name: "Hueso", hex: "#e7ddc7" },
+    ],
+    sizes: ["M", "L", "XL"],
+    description: "Camiseta oversize gama alta · gramaje 350 · full detalles. Estampado 'Hellstar Paradise' con efecto splatter al frente y llamas en la espalda. Disponible en negro y hueso. Tallas M-L-XL.",
+    tags: ["camiseta", "oversize", "gramaje 350", "hellstar", "paradise", "gama alta", "hombre"],
+    featured: true,
+  },
+
   // ── DEPORTIVO — Sudaderas tela fría — $85.000 ──────────────────────────────
   // Tallas: M · L · XL · 2XL
   {
