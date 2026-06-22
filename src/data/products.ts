@@ -47,6 +47,8 @@ export interface Product {
   description?: string;
   /** Palabras extra para que el buscador lo encuentre (modelos, sinónimos, etc.) */
   tags?: string[];
+  /** Tipo/familia para los filtros (Gorras, Gafas, Billeteras...). Si no se define, se deduce del nombre. */
+  type?: string;
   featured?: boolean;
   /** Marca como "Agotado" si no hay stock. */
   soldOut?: boolean;
@@ -5001,4 +5003,54 @@ export function discountPercent(p: Product): number {
 /** Productos actualmente en promoción. */
 export function productsOnPromo(): Product[] {
   return products.filter((p) => isOnPromo(p) && !p.soldOut);
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// TIPOS / FAMILIAS (para los filtros: Gorras, Gafas, Billeteras, Correas...)
+// El orden de esta lista define el orden en que aparecen los chips.
+// ───────────────────────────────────────────────────────────────────────────
+const TYPE_RULES: { label: string; keywords: string[] }[] = [
+  { label: "Gorras", keywords: ["gorra", "snapback", "trucker", "cachucha"] },
+  { label: "Gafas", keywords: ["gafa", "lente", "sunglass"] },
+  { label: "Billeteras", keywords: ["billetera", "wallet", "tarjetero"] },
+  { label: "Bolsos", keywords: ["bolso", "cartera", "baul", "baúl", "tote", "clutch", "mochila", "morral", "riñonera", "rinonera"] },
+  { label: "Correas", keywords: ["correa", "cinturon", "cinturón", "belt"] },
+  { label: "Medias", keywords: ["calcetin", "calcetín", " sock", "medias"] },
+  { label: "Relojes", keywords: ["reloj", "watch"] },
+  { label: "Camisetas", keywords: ["camiseta", "t-shirt", "tshirt"] },
+  { label: "Sudaderas", keywords: ["sudadera", "hoodie", "buzo", "capucha"] },
+  { label: "Bermudas", keywords: ["bermuda", "short", "pantaloneta"] },
+  { label: "Pantalones", keywords: ["pantalon", "pantalón", "jean", "jogger", "sweatpant"] },
+  { label: "Chaquetas", keywords: ["chaqueta", "jacket", "chompa"] },
+  { label: "Conjuntos", keywords: ["conjunto", "set deportivo"] },
+  { label: "Guayos", keywords: ["guayo", "turf", "futbol", "fútbol"] },
+  { label: "Perfumes", keywords: ["perfume", "loción", "locion", "fragancia", "eau de", "parfum"] },
+  { label: "Cortinas", keywords: ["cortina"] },
+  { label: "Mantas", keywords: ["manta", "cobija", "plumón", "plumon", "cobertor", "frazada", "edredon", "edredón"] },
+  { label: "Sábanas", keywords: ["sabana", "sábana"] },
+  { label: "Alfombras", keywords: ["alfombra", "tapete"] },
+];
+
+/**
+ * Tipo/familia de un producto para los filtros. Usa `type` si está definido;
+ * si no, lo deduce por palabras clave del nombre y los tags.
+ * Devuelve undefined si no encaja en ningún tipo conocido.
+ */
+export function productType(p: Product): string | undefined {
+  if (p.type) return p.type;
+  const hay = `${p.name} ${(p.tags ?? []).join(" ")}`.toLowerCase();
+  for (const rule of TYPE_RULES) {
+    if (rule.keywords.some((k) => hay.includes(k))) return rule.label;
+  }
+  return undefined;
+}
+
+/** Tipos presentes en una categoría, en el orden definido por TYPE_RULES. */
+export function typesInCategory(slug: CategorySlug): string[] {
+  const present = new Set<string>();
+  for (const p of productsByCategory(slug)) {
+    const t = productType(p);
+    if (t) present.add(t);
+  }
+  return TYPE_RULES.map((r) => r.label).filter((l) => present.has(l));
 }

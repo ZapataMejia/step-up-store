@@ -9,6 +9,7 @@ import CategoryIcon from "../../components/CategoryIcon.astro";
 import {
   categoryList,
   productsByCategory,
+  typesInCategory,
   type CategoryMeta,
   type Product,
 } from "../../data/products";
@@ -28,7 +29,10 @@ interface Props {
 const { category } = Astro.props;
 const items: Product[] = productsByCategory(category.slug);
 
-// Marcas y géneros presentes en esta categoría (para los filtros).
+// Tipos, marcas y géneros presentes en esta categoría (para los filtros).
+// Los tipos (Gorras, Gafas, Billeteras...) solo se muestran si hay 2 o más.
+const typesRaw = typesInCategory(category.slug);
+const types = typesRaw.length >= 2 ? typesRaw : [];
 const brands = [...new Set(items.map((p) => p.brand).filter(Boolean))] as string[];
 const genders = category.genders ?? [];
 const gendersInUse = genders.filter((g) => items.some((p) => p.gender === g));
@@ -75,11 +79,19 @@ const productUrlFor = (id: string) =>
             />
           </div>
 
-          {(brands.length > 0 || gendersInUse.length > 0) && (
+          {(types.length > 0 || brands.length > 0 || gendersInUse.length > 0) && (
             <div class="cat-filters" data-filters>
               <button type="button" class="cat-chip is-active" data-filter-type="all" data-filter-value="">
                 Todo
               </button>
+              {types.map((t) => (
+                <button type="button" class="cat-chip cat-chip--type" data-filter-type="type" data-filter-value={t}>
+                  {t}
+                </button>
+              ))}
+              {(gendersInUse.length > 0 || brands.length > 0) && types.length > 0 && (
+                <span class="cat-filters__sep" aria-hidden="true"></span>
+              )}
               {gendersInUse.map((g) => (
                 <button type="button" class="cat-chip" data-filter-type="gender" data-filter-value={g}>
                   {g}
@@ -136,6 +148,7 @@ const productUrlFor = (id: string) =>
     let query = "";
     let activeBrand = "";
     let activeGender = "";
+    let activeType = "";
 
     function apply() {
       let visible = 0;
@@ -143,10 +156,12 @@ const productUrlFor = (id: string) =>
         const hay = card.dataset.search || "";
         const brand = card.dataset.brand || "";
         const gender = card.dataset.gender || "";
+        const type = card.dataset.type || "";
         const matchQuery = !query || hay.includes(query);
         const matchBrand = !activeBrand || brand === activeBrand;
         const matchGender = !activeGender || gender === activeGender;
-        const show = matchQuery && matchBrand && matchGender;
+        const matchType = !activeType || type === activeType;
+        const show = matchQuery && matchBrand && matchGender && matchType;
         card.hidden = !show;
         if (show) visible += 1;
       });
@@ -174,19 +189,21 @@ const productUrlFor = (id: string) =>
         if (type === "all") {
           activeBrand = "";
           activeGender = "";
+          activeType = "";
           chips.forEach((c) => c.classList.remove("is-active"));
           chip.classList.add("is-active");
         } else {
-          // Alterna el filtro de su grupo (marca o género) de forma independiente.
+          // Alterna el filtro de su grupo (tipo, marca o género) de forma independiente.
           const sameGroup = chips.filter((c) => c.dataset.filterType === type);
           const wasActive = chip.classList.contains("is-active");
           sameGroup.forEach((c) => c.classList.remove("is-active"));
           if (type === "brand") activeBrand = wasActive ? "" : value;
           if (type === "gender") activeGender = wasActive ? "" : value;
+          if (type === "type") activeType = wasActive ? "" : value;
           if (!wasActive) chip.classList.add("is-active");
 
           const allChip = chips.find((c) => c.dataset.filterType === "all");
-          if (allChip) allChip.classList.toggle("is-active", !activeBrand && !activeGender);
+          if (allChip) allChip.classList.toggle("is-active", !activeBrand && !activeGender && !activeType);
         }
         apply();
       });
@@ -196,6 +213,7 @@ const productUrlFor = (id: string) =>
       query = "";
       activeBrand = "";
       activeGender = "";
+      activeType = "";
       if (input) input.value = "";
       chips.forEach((c) => c.classList.remove("is-active"));
       chips.find((c) => c.dataset.filterType === "all")?.classList.add("is-active");
@@ -302,7 +320,18 @@ const productUrlFor = (id: string) =>
   .cat-filters {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
+  }
+  .cat-filters__sep {
+    width: 1px;
+    align-self: stretch;
+    min-height: 1.6rem;
+    margin: 0 0.25rem;
+    background: var(--card-border);
+  }
+  .cat-chip--type.is-active {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
   }
   .cat-chip {
     padding: 0.5rem 1rem;

@@ -32,6 +32,16 @@
             </svg>
             Toca para ampliar
           </span>
+          <button type="button" class="pm__nav pm__nav--prev" data-pm-prev aria-label="Producto anterior" hidden>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <button type="button" class="pm__nav pm__nav--next" data-pm-next aria-label="Producto siguiente" hidden>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
         </div>
         <div class="pm__thumbs" data-pm-thumbs></div>
       </div>
@@ -103,6 +113,13 @@
     const sizesBlock = q<HTMLElement>("[data-pm-sizes-block]")!;
     const sizesEl = q<HTMLElement>("[data-pm-sizes]")!;
     const cta = q<HTMLAnchorElement>("[data-pm-cta]")!;
+    const prevBtn = q<HTMLButtonElement>("[data-pm-prev]")!;
+    const nextBtn = q<HTMLButtonElement>("[data-pm-next]")!;
+
+    // Lista de productos por la que se navega con las flechas (los visibles del
+    // mismo grupo/cuadrícula desde donde se abrió el modal) y posición actual.
+    let navCards: HTMLElement[] = [];
+    let navIndex = -1;
 
     type Color = { name: string; hex: string; img: string };
     type Detail = {
@@ -139,6 +156,12 @@
       cta.href = waBase ? `${waBase}?text=${encodeURIComponent(text)}` : "#";
     }
 
+    function showPlaceholder() {
+      imgEl.hidden = true;
+      placeholder.hidden = false;
+      zoomHint.hidden = true;
+    }
+
     function setImage(src: string) {
       stage.classList.remove("is-zoomed");
       if (src) {
@@ -147,11 +170,12 @@
         placeholder.hidden = true;
         zoomHint.hidden = false;
       } else {
-        imgEl.hidden = true;
-        placeholder.hidden = false;
-        zoomHint.hidden = true;
+        showPlaceholder();
       }
     }
+
+    // Si una foto no carga (404), mostramos el placeholder en vez del ícono roto.
+    imgEl.addEventListener("error", showPlaceholder);
 
     function selectColor(name: string) {
       currentColor = name;
@@ -294,7 +318,12 @@
     }
 
     // Zoom: clic alterna ampliación; el mouse mueve el punto de enfoque.
+    let swipedRecently = false;
     stage.addEventListener("click", () => {
+      if (swipedRecently) {
+        swipedRecently = false;
+        return;
+      }
       if (imgEl.hidden) return;
       stage.classList.toggle("is-zoomed");
     });
@@ -306,18 +335,14 @@
       imgEl.style.transformOrigin = `${x}% ${y}%`;
     });
 
-    // Abrir desde cualquier tarjeta (delegación de eventos).
-    document.addEventListener("click", (e) => {
-      const trigger = (e.target as HTMLElement).closest<HTMLElement>("[data-open-detail]");
-      if (!trigger) return;
-      const card = trigger.closest<HTMLElement>(".sus-prod");
-      if (!card?.dataset.product) return;
-      e.preventDefault();
-      let data: Detail;
+    // Lee los datos de una tarjeta (.sus-prod) y arma su mensaje base de WhatsApp.
+    function parseCard(card: HTMLElement): { detail: Detail; base: string } | null {
+      if (!card.dataset.product) return null;
+      let detail: Detail;
       try {
-        data = JSON.parse(card.dataset.product);
+        detail = JSON.parse(card.dataset.product);
       } catch {
-        return;
+        return null;
       }
       const ctaHref = card.querySelector<HTMLAnchorElement>("[data-wa-cta]")?.href || "";
       let base = "";
@@ -327,14 +352,94 @@
       } catch {
         /* noop */
       }
-      open(data, base);
+      return { detail, base };
+    }
+
+    function updateNav() {
+      const many = navCards.length > 1;
+      prevBtn.hidden = !many;
+      nextBtn.hidden = !many;
+    }
+
+    // Avanza/retrocede entre los productos del grupo (con vuelta circular).
+    function goTo(delta: number) {
+      if (navCards.length < 2 || navIndex < 0) return;
+      navIndex = (navIndex + delta + navCards.length) % navCards.length;
+      const parsed = parseCard(navCards[navIndex]);
+      if (!parsed) return;
+      open(parsed.detail, parsed.base);
+      updateNav();
+    }
+
+    // Abrir desde cualquier tarjeta (delegación de eventos).
+    document.addEventListener("click", (e) => {
+      const trigger = (e.target as HTMLElement).closest<HTMLElement>("[data-open-detail]");
+      if (!trigger) return;
+      const card = trigger.closest<HTMLElement>(".sus-prod");
+      if (!card) return;
+      const parsed = parseCard(card);
+      if (!parsed) return;
+      e.preventDefault();
+
+      // Productos navegables: los visibles dentro de la misma cuadrícula/carrusel.
+      const list = card.closest<HTMLElement>("ul");
+      navCards = list
+        ? (Array.from(list.querySelectorAll<HTMLElement>(".sus-prod")).filter(
+            (c) => !c.hidden
+          ) as HTMLElement[])
+        : [card];
+      navIndex = navCards.indexOf(card);
+      if (navIndex < 0) {
+        navCards = [card];
+        navIndex = 0;
+      }
+
+      open(parsed.detail, parsed.base);
+      updateNav();
     });
+
+    prevBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      goTo(-1);
+    });
+    nextBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      goTo(1);
+    });
+
+    // Swipe horizontal en la galería (móvil) para pasar de producto.
+    let touchX = 0;
+    let touchY = 0;
+    stage.addEventListener(
+      "touchstart",
+      (e) => {
+        touchX = e.changedTouches[0].clientX;
+        touchY = e.changedTouches[0].clientY;
+      },
+      { passive: true }
+    );
+    stage.addEventListener(
+      "touchend",
+      (e) => {
+        if (stage.classList.contains("is-zoomed")) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        const dy = e.changedTouches[0].clientY - touchY;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          swipedRecently = true;
+          goTo(dx < 0 ? 1 : -1);
+        }
+      },
+      { passive: true }
+    );
 
     modal.querySelectorAll<HTMLElement>("[data-pm-close]").forEach((el) =>
       el.addEventListener("click", close)
     );
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !modal.hidden) close();
+      if (modal.hidden) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowRight") goTo(1);
+      else if (e.key === "ArrowLeft") goTo(-1);
     });
   }
 
@@ -354,6 +459,11 @@
   }
   .pm[hidden] {
     display: none;
+  }
+  /* El atributo hidden debe ganar siempre, aunque el elemento tenga display:flex
+     (p. ej. el placeholder "Foto próximamente" o las miniaturas). */
+  .pm [hidden] {
+    display: none !important;
   }
   .pm__backdrop {
     position: absolute;
@@ -403,6 +513,42 @@
   }
   .pm__close:hover {
     transform: scale(1.08);
+  }
+  /* Flechas para pasar al producto anterior/siguiente, sobre la imagen. */
+  .pm__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: #111;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+    transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease;
+  }
+  .pm__nav[hidden] {
+    display: none;
+  }
+  .pm__nav:hover {
+    background: var(--primary, #2563eb);
+    color: #fff;
+    transform: translateY(-50%) scale(1.08);
+  }
+  .pm__nav--prev {
+    left: 0.5rem;
+  }
+  .pm__nav--next {
+    right: 0.5rem;
+  }
+  .pm__stage.is-zoomed .pm__nav {
+    opacity: 0;
+    pointer-events: none;
   }
   .pm__grid {
     display: grid;

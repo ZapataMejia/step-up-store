@@ -2,7 +2,7 @@
 import ProductCard from "./ProductCard.astro";
 import { products } from "../data/products";
 
-const featured = products.filter((p) => p.featured && !p.soldOut).slice(0, 4);
+const featured = products.filter((p) => p.featured && !p.soldOut).slice(0, 16);
 const productUrlFor = (slug: string, id: string) =>
   new URL(`/categoria/${slug}#${id}`, Astro.site).toString();
 ---
@@ -18,14 +18,70 @@ const productUrlFor = (slug: string, id: string) =>
         <a class="sus-featured__all" href="/#categorias">Ver todo el catálogo →</a>
       </div>
 
-      <ul class="sus-featured__grid">
-        {featured.map((product) => (
-          <ProductCard product={product} productUrl={productUrlFor(product.category, product.id)} />
-        ))}
-      </ul>
+      <div class="sus-carousel" data-carousel>
+        <button
+          type="button"
+          class="sus-carousel__btn sus-carousel__btn--prev"
+          data-carousel-prev
+          aria-label="Ver anteriores"
+          hidden
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <ul class="sus-featured__track" data-carousel-track>
+          {featured.map((product) => (
+            <ProductCard product={product} productUrl={productUrlFor(product.category, product.id)} />
+          ))}
+        </ul>
+
+        <button
+          type="button"
+          class="sus-carousel__btn sus-carousel__btn--next"
+          data-carousel-next
+          aria-label="Ver más"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+      <p class="sus-carousel__hint">Desliza para ver más →</p>
     </div>
   </section>
 )}
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((carousel) => {
+    const track = carousel.querySelector<HTMLElement>("[data-carousel-track]");
+    const prev = carousel.querySelector<HTMLButtonElement>("[data-carousel-prev]");
+    const next = carousel.querySelector<HTMLButtonElement>("[data-carousel-next]");
+    if (!track) return;
+
+    function pageSize() {
+      return Math.max(track!.clientWidth * 0.8, 240);
+    }
+
+    function updateButtons() {
+      const max = track!.scrollWidth - track!.clientWidth - 4;
+      const x = track!.scrollLeft;
+      if (prev) prev.hidden = x <= 4;
+      if (next) next.hidden = x >= max;
+    }
+
+    prev?.addEventListener("click", () => {
+      track.scrollBy({ left: -pageSize(), behavior: "smooth" });
+    });
+    next?.addEventListener("click", () => {
+      track.scrollBy({ left: pageSize(), behavior: "smooth" });
+    });
+    track.addEventListener("scroll", updateButtons, { passive: true });
+    window.addEventListener("resize", updateButtons);
+    updateButtons();
+  });
+</script>
 
 <style>
   .sus-featured__head {
@@ -46,22 +102,91 @@ const productUrlFor = (slug: string, id: string) =>
   .sus-featured__all:hover {
     text-decoration: underline;
   }
-  .sus-featured__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  .sus-carousel {
+    position: relative;
+  }
+  .sus-featured__track {
+    display: flex;
     gap: 1rem;
     margin: 0;
-    padding: 0;
+    padding: 0.25rem 0.25rem 1rem;
     list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sus-featured__track::-webkit-scrollbar {
+    height: 6px;
+  }
+  .sus-featured__track::-webkit-scrollbar-thumb {
+    background: var(--card-border);
+    border-radius: 999px;
+  }
+  .sus-featured__track > .sus-prod {
+    flex: 0 0 auto;
+    width: calc(50% - 0.5rem);
+    scroll-snap-align: start;
   }
   @media (min-width: 720px) {
-    .sus-featured__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .sus-featured__track > .sus-prod {
+      width: calc(33.333% - 0.667rem);
     }
   }
   @media (min-width: 1000px) {
-    .sus-featured__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+    .sus-featured__track > .sus-prod {
+      width: calc(25% - 0.75rem);
+    }
+  }
+
+  .sus-carousel__btn {
+    position: absolute;
+    top: calc(50% - 1.25rem);
+    transform: translateY(-50%);
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text);
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+    transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease;
+  }
+  .sus-carousel__btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    transform: translateY(-50%) scale(1.06);
+  }
+  .sus-carousel__btn[hidden] {
+    display: none;
+  }
+  .sus-carousel__btn--prev {
+    left: -0.4rem;
+  }
+  .sus-carousel__btn--next {
+    right: -0.4rem;
+  }
+  /* En pantallas pequeñas el gesto de swipe manda; ocultamos las flechas. */
+  @media (max-width: 719px) {
+    .sus-carousel__btn {
+      display: none;
+    }
+  }
+  .sus-carousel__hint {
+    margin: 0.25rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  @media (min-width: 720px) {
+    .sus-carousel__hint {
+      display: none;
     }
   }
 </style>

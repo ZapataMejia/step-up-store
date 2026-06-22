@@ -1,6 +1,6 @@
 ---
 import type { Product } from "../data/products";
-import { formatPrice, PLACEHOLDER, isOnPromo, discountPercent } from "../data/products";
+import { formatPrice, PLACEHOLDER, isOnPromo, discountPercent, productType } from "../data/products";
 import { productWhatsappUrl } from "../lib/whatsapp";
 
 interface Props {
@@ -19,6 +19,7 @@ const waPrice = onPromo
   : priceLabel;
 const firstColor = product.colors?.[0]?.name;
 const hasPhoto = Boolean(product.images?.[0]) && product.images[0] !== PLACEHOLDER;
+const ptype = productType(product) ?? "";
 
 const href = productWhatsappUrl({
   name: product.name,
@@ -66,6 +67,7 @@ const detail = {
   data-search={haystack}
   data-brand={product.brand ?? ""}
   data-gender={product.gender ?? ""}
+  data-type={ptype}
   data-product={JSON.stringify(detail)}
 >
   <article class="sus-prod__inner">
