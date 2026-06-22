@@ -44,7 +44,11 @@
           <span class="pm__gender" data-pm-gender hidden></span>
           <span class="pm__sold" data-pm-sold hidden>Agotado</span>
         </div>
-        <p class="pm__price" data-pm-price></p>
+        <p class="pm__pricewrap">
+          <span class="pm__price" data-pm-price></span>
+          <span class="pm__price-old" data-pm-price-old hidden></span>
+          <span class="pm__price-off" data-pm-price-off hidden></span>
+        </p>
         <p class="pm__desc" data-pm-desc hidden></p>
 
         <div class="pm__block" data-pm-colors-block hidden>
@@ -90,6 +94,8 @@
     const genderEl = q<HTMLElement>("[data-pm-gender]")!;
     const soldEl = q<HTMLElement>("[data-pm-sold]")!;
     const priceEl = q<HTMLElement>("[data-pm-price]")!;
+    const priceOldEl = q<HTMLElement>("[data-pm-price-old]")!;
+    const priceOffEl = q<HTMLElement>("[data-pm-price-off]")!;
     const descEl = q<HTMLElement>("[data-pm-desc]")!;
     const colorsBlock = q<HTMLElement>("[data-pm-colors-block]")!;
     const colorName = q<HTMLElement>("[data-pm-color-name]")!;
@@ -101,6 +107,7 @@
     type Color = { name: string; hex: string; img: string };
     type Detail = {
       id: string; name: string; brand: string; reference: string; price: string;
+      oldPrice?: string; discount?: number;
       description: string; gender: string; sizes: string[]; colors: Color[];
       images: string[]; url: string; soldOut: boolean;
     };
@@ -115,7 +122,12 @@
       if (d.reference) lines.push(`• Referencia: ${d.reference}`);
       if (color) lines.push(`• Color: ${color}`);
       if (size) lines.push(`• Talla: ${size}`);
-      if (d.price) lines.push(`• Precio: ${d.price}`);
+      if (d.price) {
+        const priceLine = d.oldPrice
+          ? `• Precio: ${d.price} (PROMO, antes ${d.oldPrice})`
+          : `• Precio: ${d.price}`;
+        lines.push(priceLine);
+      }
       if (d.url) lines.push("", d.url);
       lines.push("", "¿Está disponible?");
       return lines.join("\n");
@@ -172,6 +184,11 @@
       genderEl.hidden = !detail.gender;
       soldEl.hidden = !detail.soldOut;
       priceEl.textContent = detail.price;
+      const hasPromo = Boolean(detail.oldPrice);
+      priceOldEl.textContent = detail.oldPrice || "";
+      priceOldEl.hidden = !hasPromo;
+      priceOffEl.textContent = detail.discount ? `-${detail.discount}%` : "";
+      priceOffEl.hidden = !hasPromo || !detail.discount;
       descEl.textContent = detail.description;
       descEl.hidden = !detail.description;
 
@@ -520,11 +537,31 @@
     background: #52525b;
     color: #fff;
   }
-  .pm__price {
+  .pm__pricewrap {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.55rem;
     margin: 0.2rem 0;
+  }
+  .pm__price {
     font-family: var(--font-display, inherit);
     font-size: 1.8rem;
     letter-spacing: 0.02em;
+  }
+  .pm__price-old {
+    font-size: 1.05rem;
+    color: var(--text-muted, #71717a);
+    text-decoration: line-through;
+    text-decoration-color: #e11d48;
+  }
+  .pm__price-off {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #fff;
+    background: linear-gradient(135deg, #ff3b3b, #e11d48);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
   }
   .pm__desc {
     margin: 0;

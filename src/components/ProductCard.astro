@@ -1,6 +1,6 @@
 ---
 import type { Product } from "../data/products";
-import { formatPrice, PLACEHOLDER } from "../data/products";
+import { formatPrice, PLACEHOLDER, isOnPromo, discountPercent } from "../data/products";
 import { productWhatsappUrl } from "../lib/whatsapp";
 
 interface Props {
@@ -9,14 +9,21 @@ interface Props {
 }
 
 const { product, productUrl } = Astro.props;
-const priceLabel = formatPrice(product.price);
+const onPromo = isOnPromo(product);
+const priceLabel = onPromo ? formatPrice(product.promoPrice as number) : formatPrice(product.price);
+const oldPriceLabel = onPromo ? formatPrice(product.price) : "";
+const discount = onPromo ? discountPercent(product) : 0;
+// El precio que viaja al mensaje de WhatsApp deja claro el precio de promo.
+const waPrice = onPromo
+  ? `${priceLabel} (PROMO, antes ${oldPriceLabel})`
+  : priceLabel;
 const firstColor = product.colors?.[0]?.name;
 const hasPhoto = Boolean(product.images?.[0]) && product.images[0] !== PLACEHOLDER;
 
 const href = productWhatsappUrl({
   name: product.name,
   reference: product.reference,
-  price: priceLabel,
+  price: waPrice,
   color: firstColor,
   url: productUrl,
 });
@@ -41,6 +48,8 @@ const detail = {
   brand: product.brand ?? "",
   reference: product.reference ?? "",
   price: priceLabel,
+  oldPrice: oldPriceLabel,
+  discount,
   description: product.description ?? "",
   gender: product.gender ?? "",
   sizes: product.sizes ?? [],
@@ -82,7 +91,10 @@ const detail = {
           Ver detalles
         </span>
       </button>
-      {product.featured && !product.soldOut && (
+      {onPromo && !product.soldOut && (
+        <span class="sus-prod__badge sus-prod__badge--promo">-{discount}%</span>
+      )}
+      {product.featured && !product.soldOut && !onPromo && (
         <span class="sus-prod__badge">Destacado</span>
       )}
       {product.soldOut && <span class="sus-prod__badge sus-prod__badge--out">Agotado</span>}
@@ -116,7 +128,10 @@ const detail = {
       )}
 
       <div class="sus-prod__footer">
-        <span class="sus-prod__price">{priceLabel}</span>
+        <span class="sus-prod__prices">
+          <span class="sus-prod__price">{priceLabel}</span>
+          {onPromo && <span class="sus-prod__price-old">{oldPriceLabel}</span>}
+        </span>
         <a
           class="sus-prod__cta"
           href={href}
@@ -298,6 +313,11 @@ const detail = {
   .sus-prod__badge--out {
     background: #52525b;
   }
+  .sus-prod__badge--promo {
+    background: linear-gradient(135deg, #ff3b3b, #e11d48);
+    font-size: 0.8rem;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.35);
+  }
   .sus-prod__body {
     display: flex;
     flex-direction: column;
@@ -364,10 +384,21 @@ const detail = {
     margin-top: auto;
     padding-top: 0.75rem;
   }
+  .sus-prod__prices {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+  }
   .sus-prod__price {
     font-family: var(--font-display);
     font-size: 1.35rem;
     letter-spacing: 0.02em;
+  }
+  .sus-prod__price-old {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: #e11d48;
   }
   .sus-prod__cta {
     display: inline-flex;

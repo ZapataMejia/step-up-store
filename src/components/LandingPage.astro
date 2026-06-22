@@ -10,6 +10,7 @@ import Features from "./Features.astro";
 import TrustBar from "./TrustBar.astro";
 import Categories from "./Categories.astro";
 import Catalogs from "./Catalogs.astro";
+import Promos from "./Promos.astro";
 import Brands from "./Brands.astro";
 import HowToBuy from "./HowToBuy.astro";
 import PaymentMethods from "./PaymentMethods.astro";
@@ -58,6 +59,7 @@ const themeNames: Record<ThemeId, string> = {
   {themeId === "v4" && <HeroV4 heroImage={heroImage} />}
   <Features />
   <TrustBar />
+  <Promos />
   <Categories layout={themeId === "v4" ? "bento" : "grid"} />
   <Catalogs />
   <Brands image={streetImage} inverted={themeId === "v2" || themeId === "v3"} />
