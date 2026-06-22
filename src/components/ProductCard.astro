@@ -450,6 +450,7 @@ const detail = {
   }
   .sus-prod__actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: stretch;
     gap: 0.5rem;
   }
@@ -458,6 +459,8 @@ const detail = {
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
+    flex: 1 1 auto;
+    min-width: 0;
     padding: 0.6rem 0.7rem;
     border-radius: 999px;
     background: var(--card-bg);
@@ -487,15 +490,16 @@ const detail = {
     font-size: 0.85rem;
     text-decoration: none;
     white-space: nowrap;
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 0;
     transition: transform 0.12s ease, filter 0.12s ease;
   }
   .sus-prod__cta:hover {
     transform: translateY(-1px);
     filter: brightness(1.05);
   }
-  /* En tarjetas anchas (desktop) precio y botones vuelven a una sola fila. */
-  @media (min-width: 1100px) {
+  /* En tarjetas muy anchas el precio y los botones caben en una sola fila. */
+  @media (min-width: 1500px) {
     .sus-prod__footer {
       flex-direction: row;
       align-items: center;
